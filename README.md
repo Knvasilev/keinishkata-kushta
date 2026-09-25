@@ -149,8 +149,8 @@ manual checklist and a sample-data calendar preview that needs no database.
 The project was developed with AI-assisted coding and iterative testing.
 
 Bundled Bootstrap, jQuery, and validation libraries retain their license files.
-Social icons are from Icons8; attribution details are in
-[SOCIAL-ICONS.md](SOCIAL-ICONS.md). Keep the required icon credit.
+Social icons are from Bootstrap Icons (MIT); source and license details are in
+[SOCIAL-ICONS.md](SOCIAL-ICONS.md). Their bundled license must be retained.
 
 Guest-house branding and photographs are project-specific assets. Their inclusion
 does not grant permission to reuse them. No open-source license has been selected

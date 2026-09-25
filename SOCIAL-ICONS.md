@@ -1,27 +1,30 @@
 # Footer Social Icons
 
-The footer uses static PNG icons. A small CSS hover effect is disabled when the
+The footer uses static SVG icons. A small CSS hover effect is disabled when the
 visitor requests reduced motion. Both links have accessible names and native
 title tooltips, with 44px click/touch targets. Icons are hosted locally and lazy
-loaded; the original supplied images have not been changed.
+loaded. SVGs stay sharp at different screen densities without an icon font or CDN.
 
 ## Assets and Credits
 
-- Facebook: the supplied `icons8-facebook-50.png`, copied unchanged to
-  `KeinishkataKushta/wwwroot/images/social/facebook.png`.
-- Instagram: Icons8 outlined static icon, downloaded from
-  https://img.icons8.com/ios/50/instagram-new--v1.png and stored as
-  `KeinishkataKushta/wwwroot/images/social/instagram.png`.
-- Instagram source page: https://icons8.com/icon/32292/instagram
-- Icons8 free-use attribution information: https://icons8.com/license
+- Source: [Bootstrap Icons v1.13.1](https://github.com/twbs/icons/tree/v1.13.1).
+- [Facebook SVG](https://github.com/twbs/icons/blob/v1.13.1/icons/facebook.svg),
+  stored unchanged at `KeinishkataKushta/wwwroot/images/social/facebook.svg`.
+- [Instagram SVG](https://github.com/twbs/icons/blob/v1.13.1/icons/instagram.svg),
+  stored unchanged at `KeinishkataKushta/wwwroot/images/social/instagram.svg`.
+- Copyright (c) 2019-2024 The Bootstrap Authors.
+- [MIT license](KeinishkataKushta/wwwroot/images/social/LICENSE.txt), bundled
+  unchanged from the same release. Retain this notice and license when copying
+  or redistributing the icons. A visible footer attribution is not required.
 
-These are Icons8 assets depicting the social brands, not files obtained directly
-from Meta's brand-resource site. A visible Icons8 link is included in the shared
-footer. Keep that credit unless your applicable license permits removing it.
+These are Bootstrap Icons assets depicting social brands, not files obtained
+directly from Meta. The asset license does not grant ownership of the Facebook
+or Instagram trademarks. The icons identify links to the house's own profiles.
 
 ## Future Changes
 
-Replace the PNG files above to change the icons. Keep the same filenames, or
+Replace the SVG files above with appropriately licensed assets to change the
+icons, and update the source and license documentation. Keep the same filenames, or
 update their paths in `Views/Shared/_Layout.cshtml`. Razor's `asp-append-version`
 adds a content hash so browsers can fetch a replacement instead of an old cached
 copy. Update account links in `Infrastructure/SiteContact.cs`.

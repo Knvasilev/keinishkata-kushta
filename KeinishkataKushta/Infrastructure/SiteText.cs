@@ -10,7 +10,6 @@ namespace KeinishkataKushta.Infrastructure
         {
             ["SocialProfiles"] = ("Социални мрежи", "Social media"),
             ["OpensNewTab"] = ("отваря се в нов раздел", "opens in a new tab"),
-            ["IconsCredit"] = ("Икони от Icons8", "Icons by Icons8"),
             ["Availability"] = ("Свободни дати", "Availability"),
             ["AvailabilityLoading"] = ("Зареждане...", "Loading..."),
             ["AvailabilityLoadError"] = ("Не успяхме да заредим месеца. Опитайте отново.", "We couldn't load this month. Please try again."),
