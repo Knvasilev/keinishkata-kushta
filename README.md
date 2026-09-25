@@ -42,14 +42,46 @@ migrations. The web project owns controllers, view models, views, and static ass
 - Dependency-free Node.js interaction tests and a .NET console test harness
 
 ```text
-KeinishkataKushta.sln
-KeinishkataKushta/          Web project (KeinishkataKushta.Web.csproj)
-  Areas/Admin/             Admin controllers, models, and views
-  Controllers/             Public endpoints
-  Views/                   Razor pages and partial views
-  wwwroot/                 Styles, scripts, and static assets
-KeinishkataKushta.Data/     Entities, DbContext, and migrations
-tests/                     Calendar and gallery checks
+keinishkata-kushta/
+├── KeinishkataKushta.sln               # Visual Studio solution
+├── KeinishkataKushta/                  # ASP.NET Core MVC web project
+│   ├── Areas/
+│   │   └── Admin/
+│   │       ├── Controllers/           # Login and content management
+│   │       ├── Models/                # Admin form and list view models
+│   │       └── Views/                 # Admin Razor views and layout
+│   ├── Controllers/                   # Public page and form endpoints
+│   ├── Infrastructure/                # Translations, currency, calendar helpers
+│   ├── Models/                        # Public page view models
+│   ├── Views/
+│   │   ├── Availability/              # Calendar page and AJAX partial
+│   │   ├── Gallery/                   # Property photo gallery
+│   │   ├── Home/                      # Homepage, contact, and privacy
+│   │   ├── Places/                    # Nearby attractions
+│   │   ├── Rooms/                     # Room listings and details
+│   │   └── Shared/                    # Layout and shared partials
+│   ├── wwwroot/
+│   │   ├── css/                       # Public and admin styles
+│   │   ├── images/                    # Branding and social icons
+│   │   ├── js/                        # Gallery and calendar interactions
+│   │   └── lib/                       # Third-party frontend libraries
+│   ├── appsettings.example.json       # Safe local configuration template
+│   ├── KeinishkataKushta.Web.csproj    # Web project dependencies
+│   └── Program.cs                     # Services, middleware, and routes
+├── KeinishkataKushta.Data/
+│   ├── Entities/                      # EF Core entity classes
+│   ├── Migrations/                    # Database schema history
+│   ├── AppDbContext.cs                # Entity mappings and database sets
+│   ├── AvailabilityRules.cs           # Reservation overlap rules
+│   └── KeinishkataKushta.Data.csproj   # Data project dependencies
+├── tests/
+│   ├── Availability.Tests/            # .NET checks and isolated visual preview
+│   ├── availability-navigation.test.cjs
+│   └── gallery-interaction.test.cjs
+├── AVAILABILITY.md                    # Calendar policy and manual test guide
+├── GITHUB-PUBLISHING.md                # Private/public publishing checklist
+├── SOCIAL-ICONS.md                     # Icon sources and attribution
+└── README.md
 ```
 
 ## Run Locally
@@ -115,8 +147,7 @@ manual checklist and a sample-data calendar preview that needs no database.
 
 ## Assets and Credits
 
-The project was developed with AI-assisted coding and iterative testing. Design
-inspiration includes [Abstract Apartments](https://www.abstract-apartments.com/).
+The project was developed with AI-assisted coding and iterative testing.
 
 Bundled Bootstrap, jQuery, and validation libraries retain their license files.
 Social icons are from Icons8; attribution details are in
