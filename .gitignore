@@ -17,6 +17,9 @@ node_modules/
 *.zip
 *.7z
 
+# Personal publishing notes belong outside the portfolio repository
+/GITHUB-PUBLISHING.md
+
 # Local settings and credentials; keep only the reviewed example
 appsettings*.json
 !appsettings.example.json

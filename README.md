@@ -79,7 +79,6 @@ keinishkata-kushta/
 │   ├── availability-navigation.test.cjs
 │   └── gallery-interaction.test.cjs
 ├── AVAILABILITY.md                    # Calendar policy and manual test guide
-├── GITHUB-PUBLISHING.md                # Private/public publishing checklist
 ├── SOCIAL-ICONS.md                     # Icon sources and attribution
 └── README.md
 ```

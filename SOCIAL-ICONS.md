@@ -28,15 +28,3 @@ copy. Update account links in `Infrastructure/SiteContact.cs`.
 
 Restart the updated web project after changing Razor or C# files. No database
 migration is needed.
-
-## Changed Files
-
-Paths are relative to the folder containing `KeinishkataKushta.sln`:
-
-- `KeinishkataKushta/Infrastructure/SiteContact.cs`
-- `KeinishkataKushta/Infrastructure/SiteText.cs`
-- `KeinishkataKushta/Views/Shared/_Layout.cshtml`
-- `KeinishkataKushta/wwwroot/css/site.css`
-- `KeinishkataKushta/wwwroot/images/social/facebook.png`
-- `KeinishkataKushta/wwwroot/images/social/instagram.png`
-- `SOCIAL-ICONS.md`

@@ -24,10 +24,11 @@ No sample reservations have been inserted into the database.
 
 ## Start and Migrate
 
-Open the updated `KeinishkataKushta.sln`, rebuild, and start the web project.
-The existing `Program.cs` already calls `Database.MigrateAsync()` at startup, so
-it will apply `20260918161952_AddPropertyAvailability` automatically. No additional
-migration needs to be generated. Back up a production database before deploying.
+Configure a development database as described in [README.md](README.md), then
+build and run the web project. `Program.cs` calls `Database.MigrateAsync()` at
+startup to apply pending migrations, including
+`20260918161952_AddPropertyAvailability`. Back up a production database before
+deploying.
 
 Alternatively, from the folder containing `KeinishkataKushta.sln`:
 
@@ -113,36 +114,3 @@ dotnet run --project .\tests\Availability.Tests\Availability.Tests.csproj -- --p
 
 It listens only on `http://127.0.0.1:5192/Availability`, blocks other actions, and
 is not the real booking calendar. Stop it with Ctrl+C after previewing.
-
-## Files Added or Changed
-
-Paths below are relative to the solution folder. Build output and restore caches
-are excluded.
-
-- `KeinishkataKushta.Data/Entities/AvailabilityBlock.cs`
-- `KeinishkataKushta.Data/AvailabilityRules.cs`
-- `KeinishkataKushta.Data/AppDbContext.cs`
-- `KeinishkataKushta.Data/Migrations/20260918161952_AddPropertyAvailability.cs`
-- `KeinishkataKushta.Data/Migrations/20260918161952_AddPropertyAvailability.Designer.cs`
-- `KeinishkataKushta.Data/Migrations/AppDbContextModelSnapshot.cs`
-- `KeinishkataKushta/Infrastructure/AvailabilityCalendar.cs`
-- `KeinishkataKushta/Infrastructure/SiteText.cs`
-- `KeinishkataKushta/Models/AvailabilityViewModel.cs`
-- `KeinishkataKushta/Controllers/AvailabilityController.cs`
-- `KeinishkataKushta/Views/Availability/Index.cshtml`
-- `KeinishkataKushta/Views/Availability/_Calendar.cshtml`
-- `KeinishkataKushta/wwwroot/css/availability.css`
-- `KeinishkataKushta/wwwroot/js/availability.js`
-- `KeinishkataKushta/Views/Shared/_Layout.cshtml`
-- `KeinishkataKushta/Views/Rooms/Details.cshtml`
-- `KeinishkataKushta/Areas/Admin/Models/AvailabilityFormViewModel.cs`
-- `KeinishkataKushta/Areas/Admin/Controllers/AvailabilityController.cs`
-- `KeinishkataKushta/Areas/Admin/Views/Availability/Index.cshtml`
-- `KeinishkataKushta/Areas/Admin/Views/Availability/Form.cshtml`
-- `KeinishkataKushta/Areas/Admin/Views/Availability/Delete.cshtml`
-- `KeinishkataKushta/Areas/Admin/Views/Shared/_Layout.cshtml`
-- `tests/Availability.Tests/Availability.Tests.csproj`
-- `tests/Availability.Tests/Program.cs`
-- `tests/Availability.Tests/PreviewHost.cs`
-- `tests/availability-navigation.test.cjs`
-- `AVAILABILITY.md`
