@@ -1,0 +1,36 @@
+body {
+  min-height: 100vh;
+  background: #f5f5dc;
+}
+
+.admin-login-shell {
+  min-height: calc(100vh - 145px);
+  display: grid;
+  place-items: center;
+  padding: 32px 0;
+}
+
+.admin-login-panel {
+  width: min(100%, 440px);
+  padding: 36px;
+  background: #fff;
+  border: 1px solid #cfd5c7;
+  border-radius: 8px;
+  box-shadow: 0 20px 44px rgba(62, 39, 35, .1);
+}
+
+.admin-login-panel .btn-success {
+  background: #154212;
+  border-color: #154212;
+}
+
+.admin-login-panel .btn-success:hover,
+.admin-login-panel .btn-success:focus {
+  background: #2d5a27;
+  border-color: #2d5a27;
+}
+
+.admin-property-image {
+  height: 210px;
+  object-fit: cover;
+}

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<KeinishkataKushta.Web.Areas.Admin.Models.RoomListItemViewModel>
+
+<h1>Rooms</h1>
+
+<p>
+	<a asp-area="Admin" asp-controller="Room" asp-action="Create">Create room</a>
+
+</p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Slug</th>
+			<th>Capacity</th>
+			<th>Price (EUR)</th>
+			<th>Published</th>
+			<th>Cover</th>
+			<th></th>
+
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var r in Model)
+		{
+			<tr>
+				<td>@r.Id</td>
+				<td>@r.Name</td>
+				<td style="width:110px">
+					@if (!string.IsNullOrWhiteSpace(r.CoverFileName))
+					{
+						<img src="~/uploads/rooms/@r.Id/@r.CoverFileName"
+							 loading="lazy" decoding="async" style="width:100px;height:60px;object-fit:cover;border-radius:6px;" />
+					}
+					else
+					{
+						<span class="text-muted">No cover</span>
+					}
+				</td>
+				<td>@r.Slug</td>
+				<td>@r.Capacity</td>
+				<td>@r.PricePerNight.ToString("0.00") €</td>
+				<td>@r.IsPublished</td>
+				<td>
+					<a asp-area="Admin" asp-controller="Room" asp-action="Edit" asp-route-id="@r.Id">Edit</a> |
+					<a asp-area="Admin" asp-controller="Room" asp-action="Delete" asp-route-id="@r.Id">Delete</a>
+					<a asp-area="Admin" asp-controller="Gallery" asp-action="Index" asp-route-roomId="@r.Id">Gallery</a> |
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

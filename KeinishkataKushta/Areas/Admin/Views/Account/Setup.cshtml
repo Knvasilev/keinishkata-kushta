@@ -1,0 +1,43 @@
+@model KeinishkataKushta.Web.Areas.Admin.Models.AdminSetupViewModel
+
+@{
+    ViewData["Title"] = "Създаване на администратор";
+}
+
+<div class="admin-login-shell">
+    <section class="admin-login-panel">
+        <p class="text-uppercase small fw-bold text-success mb-2">Първоначална настройка</p>
+        <h1 class="h2 mb-2">Създайте администратор</h1>
+        <p class="text-muted mb-4">Тази страница е достъпна само локално и само преди създаването на първия акаунт.</p>
+
+        <form asp-area="Admin" asp-controller="Account" asp-action="Setup" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" autocomplete="username" autofocus />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                <div class="form-text">Поне 12 символа с главна, малка буква, цифра и специален знак.</div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Създай акаунт</button>
+        </form>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

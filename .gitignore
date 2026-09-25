@@ -1,0 +1,53 @@
+# Visual Studio and generated build output
+.vs/
+.idea/
+.vscode/
+[Bb]in/
+[Oo]bj/
+.codex-build/
+TestResults/
+coverage/
+node_modules/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.tmp
+*.log
+*.zip
+*.7z
+
+# Local settings and credentials; keep only the reviewed example
+appsettings*.json
+!appsettings.example.json
+.env
+.env.*
+secrets.json
+*.pfx
+*.p12
+*.pem
+*.key
+*.pubxml
+*.publishsettings
+id_rsa*
+id_ed25519*
+
+# Runtime uploads and private database files/backups
+**/wwwroot/uploads/
+App_Data/
+*.mdf
+*.ldf
+*.ndf
+*.bak
+*.bacpac
+*.dacpac
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store

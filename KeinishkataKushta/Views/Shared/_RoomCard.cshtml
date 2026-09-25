@@ -1,0 +1,40 @@
+@model RoomCardViewModel
+
+<article class="room-card h-100">
+    <a class="room-card-media"
+       asp-controller="Rooms"
+       asp-action="Details"
+       asp-route-slug="@Model.Slug">
+        @if (!string.IsNullOrWhiteSpace(Model.CoverFileName))
+        {
+            <img class="room-card-image" src="~/uploads/rooms/@Model.Id/@Model.CoverFileName" alt="@Model.Name" loading="lazy" decoding="async" />
+        }
+        else
+        {
+            <span class="room-card-placeholder">@SiteText.T(Context, "Brand")</span>
+        }
+        <span class="room-card-media-label">@SiteText.T(Context, "Details")</span>
+    </a>
+
+    <div class="room-card-body">
+        <div class="room-card-title-row">
+            <h3>@Model.Name</h3>
+            <span class="room-price">
+                <span>@CurrencyText.Euro(Context, Model.PricePerNight)</span>
+                <small>/ @SiteText.T(Context, "Night")</small>
+                @if (CurrencyText.ShowLevEquivalent())
+                {
+                    <small class="legacy-price">≈ @CurrencyText.LevEquivalent(Context, Model.PricePerNight)</small>
+                }
+            </span>
+        </div>
+        <p>@Model.Description</p>
+        <div class="room-card-footer">
+            <span>@SiteText.T(Context, "UpTo") @Model.Capacity @SiteText.T(Context, "Guests")</span>
+            <a class="btn btn-sm btn-outline-primary"
+               asp-controller="Rooms"
+               asp-action="Details"
+               asp-route-slug="@Model.Slug">@SiteText.T(Context, "Details")</a>
+        </div>
+    </div>
+</article>

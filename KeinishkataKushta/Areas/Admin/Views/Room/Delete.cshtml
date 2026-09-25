@@ -1,0 +1,11 @@
+﻿@model KeinishkataKushta.Data.Entities.Room
+
+<h1>Delete Room</h1>
+
+<p>Are you sure you want to delete <strong>@Model.Name</strong>?</p>
+
+<form asp-area="Admin" asp-controller="Room" asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Yes, delete</button>
+    <a asp-area="Admin" asp-controller="Room" asp-action="Index">Cancel</a>
+</form>

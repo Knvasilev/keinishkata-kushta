@@ -1,0 +1,198 @@
+@model HomeIndexViewModel
+
+@{
+    ViewData["Title"] = SiteText.T(Context, "Home");
+    var heroRoom = Model.FeaturedRooms.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.CoverFileName));
+    var heroLogo = Url.Content("~/images/branding/hero-clean.png");
+}
+
+<section class="hero-section hero-section-logo" style="background-image: linear-gradient(rgba(21, 66, 18, .26), rgba(21, 66, 18, .26)), url('@heroLogo');">
+    <div class="hero-panel">
+        <p class="eyebrow">@SiteText.T(Context, "Brand")</p>
+        <h1>@SiteText.T(Context, "HeroTitle")</h1>
+        <p class="hero-copy">@SiteText.T(Context, "HeroCopy")</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a class="btn btn-primary btn-lg" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "ViewRooms")</a>
+            <a class="btn btn-outline-primary btn-lg" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "ContactUs")</a>
+        </div>
+    </div>
+</section>
+
+<section class="hero-contact-section" aria-label="@SiteText.T(Context, "QuickContacts")">
+    <div class="container-xxl">
+        <div class="hero-contact-grid">
+            <a class="hero-contact-link" href="@SiteContact.PhoneHref">
+                <span>@SiteText.T(Context, "CallUs")</span>
+                <strong>@SiteContact.PhoneDisplay</strong>
+            </a>
+            <a class="hero-contact-link" asp-controller="Home" asp-action="Contact">
+                <span>@SiteText.T(Context, "WriteToUs")</span>
+                <strong>@SiteContact.Email</strong>
+            </a>
+            <a class="hero-contact-link"
+               href="@SiteContact.FacebookUrl"
+               target="_blank"
+               rel="noopener noreferrer">
+                <span>@SiteText.T(Context, "VisitFacebook")</span>
+                <strong>@SiteText.T(Context, "Facebook")</strong>
+            </a>
+            <a class="hero-contact-link"
+               href="@SiteContact.MapsUrl"
+               target="_blank"
+               rel="noopener noreferrer">
+                <span>@SiteText.T(Context, "FindUs")</span>
+                <strong>@SiteText.T(Context, "HouseAddress")</strong>
+            </a>
+        </div>
+    </div>
+</section>
+
+@if (Model.TotalRooms > 0)
+{
+    <section class="stay-summary-section" aria-label="@SiteText.T(Context, "WhyStayLabel")">
+        <div class="container-xxl">
+            <div class="stay-summary">
+                <div class="stay-summary-item">
+                    <strong>@Model.TotalRooms</strong>
+                    <span>@SiteText.T(Context, "PublishedRooms")</span>
+                </div>
+                <div class="stay-summary-item">
+                    <strong>@Model.MaxRoomCapacity</strong>
+                    <span>@SiteText.T(Context, "GuestsPerRoom")</span>
+                </div>
+                <div class="stay-summary-item">
+                    <strong>@CurrencyText.Euro(Context, Model.StartingPricePerNight)</strong>
+                    <span>@SiteText.T(Context, "PricesFrom") / @SiteText.T(Context, "Night")</span>
+                    @if (CurrencyText.ShowLevEquivalent())
+                    {
+                        <span class="legacy-price">≈ @CurrencyText.LevEquivalent(Context, Model.StartingPricePerNight)</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<section class="section-block about-section">
+    <div class="container-xxl">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <p class="eyebrow text-gold mb-3">@SiteText.T(Context, "AboutLabel")</p>
+                <h2 class="section-title">@SiteText.T(Context, "AboutTitle")</h2>
+                <p>@SiteText.T(Context, "AboutCopyOne")</p>
+                <p>@SiteText.T(Context, "AboutCopyTwo")</p>
+            </div>
+            <div class="col-lg-6">
+                @if (heroRoom != null)
+                {
+                    <div class="image-zoom-frame about-image">
+                        <img src="~/uploads/rooms/@heroRoom.Id/@heroRoom.CoverFileName" alt="@SiteText.T(Context, "Brand")" loading="lazy" decoding="async" />
+                    </div>
+                }
+                else
+                {
+                    <div class="about-placeholder">@SiteText.T(Context, "Brand")</div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-block rooms-preview">
+    <div class="container-xxl">
+        <div class="section-heading centered">
+            <p class="eyebrow text-gold">@SiteText.T(Context, "Rooms")</p>
+            <h2>@SiteText.T(Context, "FeaturedRooms")</h2>
+            <p>@SiteText.T(Context, "FeaturedRoomsCopy")</p>
+        </div>
+
+        @if (Model.FeaturedRooms.Count == 0)
+        {
+            <div class="alert alert-info">@SiteText.T(Context, "NoRooms")</div>
+        }
+        else
+        {
+            <div class="room-grid room-grid-featured">
+                @foreach (var room in Model.FeaturedRooms)
+                {
+                    <partial name="_RoomCard" model="room" />
+                }
+            </div>
+        }
+
+        <div class="text-center mt-5">
+            <a class="btn btn-outline-primary btn-lg" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "AllRooms")</a>
+        </div>
+    </div>
+</section>
+
+<section class="section-block stay-experience">
+    <div class="container-xxl">
+        <div class="experience-heading">
+            <div>
+                <p class="eyebrow text-gold">@SiteText.T(Context, "WhyStayLabel")</p>
+                <h2>@SiteText.T(Context, "WhyStayTitle")</h2>
+            </div>
+            <p>@SiteText.T(Context, "WhyStayCopy")</p>
+        </div>
+
+        <div class="experience-grid">
+            <article class="experience-item">
+                <span class="experience-number">01</span>
+                <h3>@SiteText.T(Context, "QuietStayTitle")</h3>
+                <p>@SiteText.T(Context, "QuietStayCopy")</p>
+            </article>
+            <article class="experience-item">
+                <span class="experience-number">02</span>
+                <h3>@SiteText.T(Context, "ComfortStayTitle")</h3>
+                <p>@SiteText.T(Context, "ComfortStayCopy")</p>
+            </article>
+            <article class="experience-item">
+                <span class="experience-number">03</span>
+                <h3>@SiteText.T(Context, "DirectStayTitle")</h3>
+                <p>@SiteText.T(Context, "DirectStayCopy")</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="local-guide-section">
+    <div class="container-xxl local-guide-layout">
+        <div class="local-guide-copy">
+            <p class="eyebrow">@SiteText.T(Context, "LocalGuideLabel")</p>
+            <h2>@SiteText.T(Context, "LocalGuideTitle")</h2>
+            <p>@SiteText.T(Context, "LocalGuideCopy")</p>
+            <a class="btn btn-light btn-lg" asp-controller="Places" asp-action="Index">@SiteText.T(Context, "ExplorePlaces")</a>
+        </div>
+        <ol class="local-guide-list">
+            <li>
+                <span>01</span>
+                <strong>@SiteText.T(Context, "HistoricLovech")</strong>
+            </li>
+            <li>
+                <span>02</span>
+                <strong>@SiteText.T(Context, "DevetashkaCave")</strong>
+            </li>
+            <li>
+                <span>03</span>
+                <strong>@SiteText.T(Context, "KrushunaWaterfalls")</strong>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container-xxl">
+        <div class="section-band">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="section-title">@SiteText.T(Context, "PlanStayTitle")</h2>
+                    <p class="mb-0">@SiteText.T(Context, "PlanStayCopy")</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="btn btn-primary btn-lg" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "ContactUs")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

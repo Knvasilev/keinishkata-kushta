@@ -1,0 +1,38 @@
+@model AvailabilityViewModel
+@{
+    ViewData["Title"] = SiteText.T(Context, "Availability");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/availability.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/availability.js" asp-append-version="true"></script>
+}
+
+<section class="container-xxl availability-section">
+    <header class="availability-heading">
+        <h1>@SiteText.T(Context, "Availability")</h1>
+        <p>@SiteText.T(Context, "AvailabilityIntro")</p>
+    </header>
+
+    <div class="availability-widget" data-availability aria-busy="false"
+         data-loading="@SiteText.T(Context, "AvailabilityLoading")"
+         data-error="@SiteText.T(Context, "AvailabilityLoadError")">
+        <partial name="_Calendar" model="Model" />
+    </div>
+    <p class="availability-status" role="status" aria-live="polite" aria-atomic="true" data-availability-status></p>
+
+    <ul class="availability-legend" aria-label="@SiteText.T(Context, "Availability")">
+        <li><span class="available" aria-hidden="true">•</span>@SiteText.T(Context, "AvailabilityAvailable")</li>
+        <li><span class="occupied" aria-hidden="true">×</span>@SiteText.T(Context, "AvailabilityOccupied")</li>
+        <li><span class="unavailable" aria-hidden="true">−</span>@SiteText.T(Context, "AvailabilityUnavailable")</li>
+    </ul>
+    <p class="availability-note">@SiteText.T(Context, "AvailabilityNights")</p>
+    <p class="availability-note">@SiteText.T(Context, "AvailabilityExclusive")</p>
+    <div class="availability-enquiry">
+        <p>@SiteText.T(Context, "AvailabilityDisclaimer")</p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Contact" asp-route-lang="@SiteText.Lang(Context)">@SiteText.T(Context, "AvailabilityEnquire")</a>
+    </div>
+</section>

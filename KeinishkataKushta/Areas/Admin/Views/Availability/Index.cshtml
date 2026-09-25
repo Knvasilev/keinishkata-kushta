@@ -1,0 +1,58 @@
+@model List<KeinishkataKushta.Data.Entities.AvailabilityBlock>
+@using KeinishkataKushta.Infrastructure
+@using KeinishkataKushta.Data.Entities
+@{
+    ViewData["Title"] = SiteText.T(Context, "Availability");
+    var history = ViewData["History"] is true;
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+    <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+    <a class="btn btn-primary" asp-action="Create">@SiteText.T(Context, "AvailabilityAdd")</a>
+</div>
+<p>@SiteText.T(Context, "AvailabilityAdminNote")</p>
+@if (TempData["AvailabilitySaved"] is true)
+{
+    <div class="alert alert-success" role="status">@SiteText.T(Context, "AvailabilitySaved")</div>
+}
+@if (TempData["AvailabilityChanged"] is true)
+{
+    <div class="alert alert-warning" role="alert">@SiteText.T(Context, "AvailabilityChanged")</div>
+}
+<nav class="nav nav-tabs mb-3">
+    <a class="nav-link @(!history ? "active" : "")" asp-action="Index" aria-current="@(!history ? "page" : null)">@SiteText.T(Context, "AvailabilityUpcoming")</a>
+    <a class="nav-link @(history ? "active" : "")" asp-action="Index" asp-route-history="true" aria-current="@(history ? "page" : null)">@SiteText.T(Context, "AvailabilityHistory")</a>
+</nav>
+@if (Model.Count == 0)
+{
+    <p>@SiteText.T(Context, "AvailabilityNoEntries")</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr>
+                <th>@SiteText.T(Context, "AvailabilityRoomsUsed")</th>
+                <th>@SiteText.T(Context, "AvailabilityArrival")</th>
+                <th>@SiteText.T(Context, "AvailabilityDeparture")</th>
+                <th>@SiteText.T(Context, "AvailabilityKind")</th>
+                <th><span class="visually-hidden">@SiteText.T(Context, "AvailabilityEdit")</span></th>
+            </tr></thead>
+            <tbody>
+            @foreach (var block in Model)
+            {
+                <tr>
+                    <td class="text-break">@block.RoomsUsed</td>
+                    <td class="text-nowrap">@block.Arrival.ToString("dd.MM.yyyy")</td>
+                    <td class="text-nowrap">@block.Departure.ToString("dd.MM.yyyy")</td>
+                    <td>@SiteText.T(Context, block.Kind == AvailabilityBlockKind.Reservation ? "AvailabilityReservation" : "AvailabilityMaintenance")</td>
+                    <td><div class="d-flex gap-2">
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@block.Id">@SiteText.T(Context, "AvailabilityEdit")</a>
+                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@block.Id">@SiteText.T(Context, "AvailabilityDelete")</a>
+                    </div></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-area="" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "Availability") &rarr;</a>

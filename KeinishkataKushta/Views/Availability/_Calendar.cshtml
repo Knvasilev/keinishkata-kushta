@@ -1,0 +1,87 @@
+@model AvailabilityViewModel
+@using System.Globalization
+@{
+    var lang = SiteText.Lang(Context);
+    var culture = CultureInfo.GetCultureInfo(lang == "bg" ? "bg-BG" : "en-GB");
+}
+
+<div data-calendar-fragment>
+    <div class="availability-toolbar">
+        <h2 class="availability-accommodation">@SiteText.T(Context, "WholeHouse")</h2>
+        <nav class="availability-navigation" aria-label="@SiteText.T(Context, "Availability")">
+            <a asp-action="Index" asp-route-lang="@lang"
+               class="availability-today" data-calendar-nav="today">@SiteText.T(Context, "AvailabilityToday")</a>
+            @if (Model.Month > Model.FirstMonth)
+            {
+                <a class="availability-arrow" asp-action="Index" asp-route-lang="@lang"
+                   asp-route-month="@Model.Month.AddMonths(-1).ToString("yyyy-MM")"
+                   data-calendar-nav="previous" aria-label="@SiteText.T(Context, "AvailabilityPrevious")" title="@SiteText.T(Context, "AvailabilityPrevious")">&#8249;</a>
+            }
+            else
+            {
+                <button class="availability-arrow" disabled data-calendar-nav="previous" aria-label="@SiteText.T(Context, "AvailabilityPrevious")">&#8249;</button>
+            }
+            @if (Model.Month < Model.LastMonth)
+            {
+                <a class="availability-arrow" asp-action="Index" asp-route-lang="@lang"
+                   asp-route-month="@Model.Month.AddMonths(1).ToString("yyyy-MM")"
+                   data-calendar-nav="next" aria-label="@SiteText.T(Context, "AvailabilityNext")" title="@SiteText.T(Context, "AvailabilityNext")">&#8250;</a>
+            }
+            else
+            {
+                <button class="availability-arrow" disabled data-calendar-nav="next" aria-label="@SiteText.T(Context, "AvailabilityNext")">&#8250;</button>
+            }
+        </nav>
+    </div>
+
+    <div class="availability-months">
+        @foreach (var calendar in Model.Months)
+        {
+            <div class="availability-month">
+                <table class="availability-calendar">
+                    <caption>@calendar.Month.ToString("MMMM yyyy", culture)</caption>
+                    <thead>
+                        <tr>
+                            @for (var day = 0; day < 7; day++)
+                            {
+                                var weekday = (DayOfWeek)((day + 1) % 7);
+                                <th scope="col" abbr="@culture.DateTimeFormat.GetDayName(weekday)">@culture.DateTimeFormat.GetAbbreviatedDayName(weekday)</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var week = 0; week < 6; week++)
+                        {
+                            <tr>
+                                @for (var day = 0; day < 7; day++)
+                                {
+                                    var index = week * 7 + day - calendar.LeadingDays;
+                                    if (index < 0 || index >= calendar.Days.Count)
+                                    {
+                                        <td></td>
+                                    }
+                                    else
+                                    {
+                                        var item = calendar.Days[index];
+                                        var label = $"{item.Date.ToString("dd MMMM yyyy", culture)}: {SiteText.T(Context, "Availability" + item.Status)}";
+                                        var symbol = item.Status == "Available" ? "•" : item.Status == "Occupied" ? "×" : item.Status == "Unavailable" ? "−" : "";
+                                        <td>
+                                            <div class="availability-day @item.Status.ToLowerInvariant() @(item.Date == Model.Today ? "is-today" : "")"
+                                                 title="@label" aria-current="@(item.Date == Model.Today ? "date" : null)">
+                                                <time datetime="@item.Date.ToString("yyyy-MM-dd")">
+                                                    <span aria-hidden="true">@item.Date.Day</span>
+                                                    <span class="visually-hidden">@label</span>
+                                                </time>
+                                                <span class="availability-symbol" aria-hidden="true">@symbol</span>
+                                            </div>
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

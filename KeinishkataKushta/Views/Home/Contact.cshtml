@@ -1,0 +1,81 @@
+@model ContactFormViewModel
+
+@{
+    ViewData["Title"] = SiteText.T(Context, "Contact");
+}
+
+<section class="contact-hero">
+    <div class="container-xxl">
+        <p class="eyebrow text-gold">@SiteText.T(Context, "Contact")</p>
+        <h1>@SiteText.T(Context, "ContactTitle")</h1>
+        <p>@SiteText.T(Context, "ContactIntro")</p>
+    </div>
+</section>
+
+<section class="container-xxl contact-layout pb-section">
+    <div class="contact-info-grid">
+        <article class="contact-info-card">
+            <span class="contact-icon">☎</span>
+            <h2>@SiteText.T(Context, "Phone")</h2>
+            <p><a href="@SiteContact.PhoneHref">@SiteContact.PhoneDisplay</a></p>
+        </article>
+        <article class="contact-info-card">
+            <span class="contact-icon">✉</span>
+            <h2>@SiteText.T(Context, "Email")</h2>
+            <p><a href="mailto:@SiteContact.Email">@SiteContact.Email</a></p>
+        </article>
+        <article class="contact-info-card wide">
+            <span class="contact-icon">⌖</span>
+            <h2>@SiteText.T(Context, "Address")</h2>
+            <p>
+                <a href="@SiteContact.MapsUrl" target="_blank" rel="noopener noreferrer">
+                    @SiteText.T(Context, "HouseAddress")
+                </a>
+            </p>
+        </article>
+    </div>
+
+    <form asp-controller="Home" asp-action="Contact" method="post" class="contact-form">
+        @Html.AntiForgeryToken()
+        <h2>@SiteText.T(Context, "InquiryTitle")</h2>
+
+        @if (TempData["ContactSuccess"] != null)
+        {
+            <div class="alert alert-success">@SiteText.T(Context, "ContactSuccess")</div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">@SiteText.T(Context, "Name")</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label">@SiteText.T(Context, "Phone")</label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Email" class="form-label">@SiteText.T(Context, "Email")</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Message" class="form-label">@SiteText.T(Context, "Message")</label>
+                <textarea asp-for="Message" class="form-control" rows="6" placeholder="@SiteText.T(Context, "MessagePlaceholder")"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg mt-4">@SiteText.T(Context, "SendMessage")</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,47 @@
+@model List<NearbyPlaceViewModel>
+
+@{
+    ViewData["Title"] = SiteText.T(Context, "NearbyPlaces");
+}
+
+<section class="page-heading">
+    <p class="eyebrow text-gold">@SiteText.T(Context, "NearbyPlaces")</p>
+    <h1>@SiteText.T(Context, "NearbyTitle")</h1>
+    <p class="lead">@SiteText.T(Context, "NearbyIntro")</p>
+</section>
+
+<section class="container-xxl">
+    <div class="places-bento">
+        @foreach (var place in Model)
+        {
+            <article class="place-card">
+                <div class="place-card-top">
+                    <span class="place-category">@place.Category</span>
+                    <span class="place-distance">@place.Distance</span>
+                </div>
+                <h2>@place.Name</h2>
+                <p>@place.Description</p>
+                <div class="d-flex flex-wrap gap-2 mt-auto">
+                    <a class="btn btn-sm btn-outline-primary" href="@place.VisitUrl" target="_blank" rel="noopener">@SiteText.T(Context, "LearnMore")</a>
+                    <a class="btn btn-sm btn-primary" href="@place.MapUrl" target="_blank" rel="noopener">@SiteText.T(Context, "OpenMap")</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="container-xxl">
+        <div class="section-band">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="section-title">@SiteText.T(Context, "NearbyPlanning")</h2>
+                    <p class="mb-0">@SiteText.T(Context, "NearbyPlanningCopy")</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="btn btn-primary btn-lg" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "AskUs")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

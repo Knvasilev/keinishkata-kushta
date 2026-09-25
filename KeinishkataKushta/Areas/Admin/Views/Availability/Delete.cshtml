@@ -1,0 +1,15 @@
+@model KeinishkataKushta.Data.Entities.AvailabilityBlock
+@using KeinishkataKushta.Infrastructure
+@{
+    ViewData["Title"] = SiteText.T(Context, "AvailabilityDelete");
+}
+<h1 class="h3">@ViewData["Title"]</h1>
+<p>@SiteText.T(Context, "AvailabilityDeleteConfirm")</p>
+<p><strong class="text-break">@Model.RoomsUsed</strong><br />
+    @Model.Arrival.ToString("dd.MM.yyyy") &ndash; @Model.Departure.ToString("dd.MM.yyyy")</p>
+<form method="post" asp-action="Delete">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="hidden" name="version" value="@Convert.ToBase64String(Model.Version)" />
+    <button type="submit" class="btn btn-danger">@SiteText.T(Context, "AvailabilityDelete")</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">@SiteText.T(Context, "AvailabilityCancel")</a>
+</form>

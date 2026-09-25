@@ -1,0 +1,73 @@
+@model PropertyGalleryViewModel
+
+@{
+    ViewData["Title"] = SiteText.T(Context, "Gallery");
+}
+
+<section class="container-xxl page-heading gallery-page-heading">
+    <p class="eyebrow text-gold">@SiteText.T(Context, "GalleryLabel")</p>
+    <h1>@SiteText.T(Context, "GalleryTitle")</h1>
+    <p class="lead mb-0">@SiteText.T(Context, "GalleryIntro")</p>
+</section>
+
+<section class="container-xxl pb-5">
+    @if (Model.Images.Count == 0)
+    {
+        <div class="section-band text-center">
+            <p class="mb-0">@SiteText.T(Context, "GalleryEmpty")</p>
+        </div>
+    }
+    else
+    {
+        <div class="property-gallery-grid">
+            @foreach (var image in Model.Images)
+            {
+                var caption = image.Caption ?? SiteText.T(Context, "PropertyPhoto");
+                <button class="image-zoom-frame gallery-trigger property-gallery-item"
+                        type="button"
+                        data-gallery-trigger
+                        data-gallery-src="@Url.Content($"~/uploads/property/{image.FileName}")"
+                        data-gallery-caption="@caption"
+                        aria-label="@SiteText.T(Context, "OpenImage"): @caption">
+                    <img src="~/uploads/property/@image.FileName"
+                         alt="@caption"
+                         loading="lazy" decoding="async" />
+                    @if (!string.IsNullOrWhiteSpace(image.Caption))
+                    {
+                        <span class="property-gallery-caption">@image.Caption</span>
+                    }
+                </button>
+            }
+        </div>
+    }
+</section>
+
+@if (Model.Images.Count > 0)
+{
+    <div class="gallery-lightbox"
+         data-gallery-lightbox
+         role="dialog"
+         aria-modal="true"
+         aria-label="@SiteText.T(Context, "GalleryTitle")"
+         hidden>
+        <button class="gallery-lightbox-close"
+                type="button"
+                data-gallery-close
+                aria-label="@SiteText.T(Context, "CloseGallery")">&times;</button>
+        <button class="gallery-lightbox-nav gallery-lightbox-previous"
+                type="button"
+                data-gallery-previous
+                aria-label="@SiteText.T(Context, "PreviousImage")">&#8249;</button>
+        <figure class="gallery-lightbox-stage">
+            <img data-gallery-image src="" alt="" />
+            <figcaption>
+                <span data-gallery-caption></span>
+                <span><span data-gallery-counter></span> / @Model.Images.Count</span>
+            </figcaption>
+        </figure>
+        <button class="gallery-lightbox-nav gallery-lightbox-next"
+                type="button"
+                data-gallery-next
+                aria-label="@SiteText.T(Context, "NextImage")">&#8250;</button>
+    </div>
+}

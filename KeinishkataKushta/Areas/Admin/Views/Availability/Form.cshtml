@@ -1,0 +1,40 @@
+@model KeinishkataKushta.Web.Areas.Admin.Models.AvailabilityFormViewModel
+@using KeinishkataKushta.Infrastructure
+@using KeinishkataKushta.Data.Entities
+@{
+    ViewData["Title"] = SiteText.T(Context, Model.Id == 0 ? "AvailabilityAdd" : "AvailabilityEdit");
+}
+<h1 class="h3">@ViewData["Title"]</h1>
+<p>@SiteText.T(Context, "AvailabilityNights")</p>
+<form method="post" asp-action="Save" class="row g-3">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Version" />
+    <div class="col-12"><div asp-validation-summary="All" class="text-danger" role="alert"></div></div>
+    <div class="col-md-6">
+        <label asp-for="RoomsUsed" class="form-label">@SiteText.T(Context, "AvailabilityRoomsUsed")</label>
+        <input asp-for="RoomsUsed" class="form-control" maxlength="500" />
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Kind" class="form-label">@SiteText.T(Context, "AvailabilityKind")</label>
+        <select asp-for="Kind" class="form-select">
+            <option value="@AvailabilityBlockKind.Reservation">@SiteText.T(Context, "AvailabilityReservation")</option>
+            <option value="@AvailabilityBlockKind.Maintenance">@SiteText.T(Context, "AvailabilityMaintenance")</option>
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Arrival" class="form-label">@SiteText.T(Context, "AvailabilityArrival")</label>
+        <input asp-for="Arrival" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" required />
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Departure" class="form-label">@SiteText.T(Context, "AvailabilityDeparture")</label>
+        <input asp-for="Departure" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" required />
+    </div>
+    <div class="col-12">
+        <label asp-for="Notes" class="form-label">@SiteText.T(Context, "AvailabilityNotes")</label>
+        <textarea asp-for="Notes" class="form-control" rows="3" maxlength="1000"></textarea>
+    </div>
+    <div class="col-12 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">@SiteText.T(Context, "AvailabilitySave")</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">@SiteText.T(Context, "AvailabilityCancel")</a>
+    </div>
+</form>

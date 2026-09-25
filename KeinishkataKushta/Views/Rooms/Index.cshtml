@@ -1,0 +1,27 @@
+@model List<RoomCardViewModel>
+
+@{
+    ViewData["Title"] = SiteText.T(Context, "Rooms");
+}
+
+<section class="page-heading centered">
+    <p class="eyebrow text-gold">@SiteText.T(Context, "Rooms")</p>
+    <h1>@SiteText.T(Context, "RoomsTitle")</h1>
+    <p class="lead">@SiteText.T(Context, "RoomsIntro")</p>
+</section>
+
+<section class="container-xxl pb-section">
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">@SiteText.T(Context, "NoRooms")</div>
+    }
+    else
+    {
+        <div class="room-grid">
+            @foreach (var room in Model)
+            {
+                <partial name="_RoomCard" model="room" />
+            }
+        </div>
+    }
+</section>

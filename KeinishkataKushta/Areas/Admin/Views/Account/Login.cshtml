@@ -1,0 +1,42 @@
+@model KeinishkataKushta.Web.Areas.Admin.Models.AdminLoginViewModel
+
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<div class="admin-login-shell">
+    <section class="admin-login-panel">
+        <p class="text-uppercase small fw-bold text-success mb-2">Къщата на Кейнишката</p>
+        <h1 class="h2 mb-2">Вход в администрацията</h1>
+        <p class="text-muted mb-4">Въведете администраторските си данни.</p>
+
+        @if (TempData["AdminCreated"] != null)
+        {
+            <div class="alert alert-success">Администраторският акаунт е създаден. Вече можете да влезете.</div>
+        }
+
+        <form asp-area="Admin" asp-controller="Account" asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" autocomplete="username" autofocus />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Вход</button>
+        </form>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

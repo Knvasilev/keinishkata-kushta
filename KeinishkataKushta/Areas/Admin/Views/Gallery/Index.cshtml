@@ -1,0 +1,86 @@
+﻿@model KeinishkataKushta.Web.Areas.Admin.Models.GalleryIndexViewModel
+
+@{
+	ViewData["Title"] = "Gallery";
+}
+
+<h1>Gallery for: @Model.RoomName</h1>
+
+@if (TempData["Err"] != null)
+{
+	<div class="alert alert-danger">@TempData["Err"]</div>
+}
+
+
+<form asp-area="Admin" asp-controller="Gallery" asp-action="Upload" method="post" enctype="multipart/form-data">
+	@Html.AntiForgeryToken()
+	<input type="hidden" asp-for="Upload.RoomId" />
+
+	<div class="form-check mb-3">
+		<input class="form-check-input" asp-for="Upload.IsCover" type="checkbox" />
+		<label class="form-check-label" asp-for="Upload.IsCover">Set as cover</label>
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Image file</label>
+		<input asp-for="Upload.File" type="file" class="form-control" />
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Caption (optional)</label>
+		<input asp-for="Upload.Caption" class="form-control" />
+	</div>
+
+	<button class="btn btn-primary" type="submit">Upload</button>
+	<a class="btn btn-secondary" asp-area="Admin" asp-controller="Room" asp-action="Index">Back to Rooms</a>
+</form>
+
+<hr />
+
+@if (Model.Images.Count == 0)
+{
+	<p>No images yet.</p>
+}
+else
+{
+	<div class="row">
+		@foreach (var img in Model.Images)
+		{
+			<div class="col-md-3 mb-4">
+				<div class="card">
+					<img class="card-img-top"
+						 src="~/uploads/rooms/@Model.RoomId/@img.FileName"
+						 alt="@img.Caption" loading="lazy" decoding="async" style="aspect-ratio:4/3;object-fit:cover;" />
+
+					<div class="card-body">
+						<div class="small text-muted">@img.Caption</div>
+
+						@if (img.IsCover) // Badge for cover image
+						{
+							<span class="badge bg-success">Cover</span>
+						}
+
+						@if (!img.IsCover)
+						{
+							<form asp-area="Admin" asp-controller="Gallery" asp-action="MakeCover" method="post" class="mt-2">
+								@Html.AntiForgeryToken()
+								<input type="hidden" name="id" value="@img.Id" />
+								<input type="hidden" name="roomId" value="@Model.RoomId" />
+								<button class="btn btn-sm btn-outline-success" type="submit">Make cover</button>
+							</form>
+						}
+
+
+						<form asp-area="Admin" asp-controller="Gallery" asp-action="Delete" method="post" class="mt-2">
+							@Html.AntiForgeryToken()
+							<input type="hidden" name="id" value="@img.Id" />
+							<input type="hidden" name="roomId" value="@Model.RoomId" />
+							<button class="btn btn-sm btn-danger" type="submit">Delete</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+}
+

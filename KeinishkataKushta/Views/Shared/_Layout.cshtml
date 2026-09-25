@@ -1,0 +1,108 @@
+@{
+    var lang = SiteText.Lang(Context);
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+}
+
+<!DOCTYPE html>
+<html lang="@lang">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @SiteText.T(Context, "Brand")</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/KeinishkataKushta.Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-xxl">
+                <a class="navbar-brand site-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/branding/keinishkata-logo.png" alt="@SiteText.T(Context, "Brand")" />
+                    <span>@SiteText.T(Context, "Brand")</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNavbar" aria-controls="siteNavbar" aria-expanded="false" aria-label="Menu">
+                    <span class="site-menu-icon" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+                <div class="collapse navbar-collapse" id="siteNavbar">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@SiteText.T(Context, "Home")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "Rooms")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Gallery" asp-action="Index">@SiteText.T(Context, "Gallery")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Places" asp-action="Index">@SiteText.T(Context, "NearbyPlaces")</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "Contact")</a>
+                        </li>
+                    </ul>
+
+                    <div class="site-actions">
+                        <div class="language-switch" aria-label="Language">
+                            <a class="@(lang == "bg" ? "active" : null)" asp-controller="Language" asp-action="Set" asp-route-lang="bg" asp-route-returnUrl="@returnUrl">BG</a>
+                            <a class="@(lang == "en" ? "active" : null)" asp-controller="Language" asp-action="Set" asp-route-lang="en" asp-route-returnUrl="@returnUrl">EN</a>
+                        </div>
+                        <a class="btn btn-primary site-booking-btn" asp-area="" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "Availability")</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container-xxl">
+            <div>
+                <a class="footer-brand" asp-area="" asp-controller="Home" asp-action="Index">@SiteText.T(Context, "Brand")</a>
+                <p>@SiteText.T(Context, "FooterCopy")</p>
+            </div>
+            <div class="footer-links">
+                <nav>
+                    <a asp-area="" asp-controller="Home" asp-action="Index">@SiteText.T(Context, "Home")</a>
+                    <a asp-area="" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "Rooms")</a>
+                    <a asp-area="" asp-controller="Gallery" asp-action="Index">@SiteText.T(Context, "Gallery")</a>
+                    <a asp-area="" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "Availability")</a>
+                    <a asp-area="" asp-controller="Places" asp-action="Index">@SiteText.T(Context, "NearbyPlaces")</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "Contact")</a>
+                </nav>
+                <div class="footer-socials" role="group" aria-label="@SiteText.T(Context, "SocialProfiles")">
+                    <a class="footer-social-link" href="@SiteContact.FacebookUrl" target="_blank" rel="noopener noreferrer"
+                       aria-label="Facebook (@SiteText.T(Context, "OpensNewTab"))" title="Facebook">
+                        <img src="~/images/social/facebook.png" asp-append-version="true" alt="" width="28" height="28" loading="lazy" decoding="async" />
+                    </a>
+                    <a class="footer-social-link" href="@SiteContact.InstagramUrl" target="_blank" rel="noopener noreferrer"
+                       aria-label="Instagram (@SiteText.T(Context, "OpensNewTab"))" title="Instagram">
+                        <img src="~/images/social/instagram.png" asp-append-version="true" alt="" width="28" height="28" loading="lazy" decoding="async" />
+                    </a>
+                </div>
+            </div>
+            <small class="footer-meta">
+                <span>&copy; 2026 @SiteText.T(Context, "Brand"). @SiteText.T(Context, "Copyright")</span>
+                <a href="https://icons8.com/">@SiteText.T(Context, "IconsCredit")</a>
+            </small>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

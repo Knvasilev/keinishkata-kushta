@@ -1,0 +1,95 @@
+@model RoomDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    var cover = Model.Images.FirstOrDefault(i => i.IsCover) ?? Model.Images.FirstOrDefault();
+}
+
+<section class="container-xxl room-details-heading">
+    <div>
+        <p class="eyebrow text-gold">@SiteText.T(Context, "Rooms")</p>
+        <h1>@Model.Name</h1>
+        <p class="lead mb-0">@Model.Description</p>
+    </div>
+    <div class="room-details-meta">
+        <span>@SiteText.T(Context, "UpTo") @Model.Capacity @SiteText.T(Context, "Guests")</span>
+        <strong>@CurrencyText.Euro(Context, Model.PricePerNight) / @SiteText.T(Context, "Night")</strong>
+        @if (CurrencyText.ShowLevEquivalent())
+        {
+            <small class="legacy-price">≈ @CurrencyText.LevEquivalent(Context, Model.PricePerNight)</small>
+        }
+    </div>
+</section>
+
+<section class="container-xxl">
+    @if (cover != null)
+    {
+        <button class="image-zoom-frame room-cover-frame gallery-trigger"
+                type="button"
+                data-gallery-trigger
+                data-gallery-src="@Url.Content($"~/uploads/rooms/{Model.Id}/{cover.FileName}")"
+                data-gallery-caption="@(cover.Caption ?? Model.Name)"
+                aria-label="@SiteText.T(Context, "OpenImage"): @(cover.Caption ?? Model.Name)">
+            <img class="room-detail-cover" src="~/uploads/rooms/@Model.Id/@cover.FileName" alt="@(cover.Caption ?? Model.Name)" />
+        </button>
+    }
+
+    @if (Model.Images.Count > 1)
+    {
+        <div class="room-gallery">
+            @foreach (var image in Model.Images.Where(image => image.FileName != cover?.FileName))
+            {
+                <button class="image-zoom-frame gallery-trigger"
+                        type="button"
+                        data-gallery-trigger
+                        data-gallery-src="@Url.Content($"~/uploads/rooms/{Model.Id}/{image.FileName}")"
+                        data-gallery-caption="@(image.Caption ?? Model.Name)"
+                        aria-label="@SiteText.T(Context, "OpenImage"): @(image.Caption ?? Model.Name)">
+                    <img src="~/uploads/rooms/@Model.Id/@image.FileName" alt="@(image.Caption ?? Model.Name)" loading="lazy" decoding="async" />
+                </button>
+            }
+        </div>
+    }
+</section>
+
+@if (Model.Images.Count > 0)
+{
+    <div class="gallery-lightbox gallery-lightbox-interactive"
+         data-gallery-lightbox
+         role="dialog"
+         aria-modal="true"
+         aria-label="@Model.Name"
+         hidden>
+        <button class="gallery-lightbox-close"
+                type="button"
+                data-gallery-close
+                aria-label="@SiteText.T(Context, "CloseGallery")">&times;</button>
+        <figure class="gallery-lightbox-stage">
+            <button class="gallery-photo-button" type="button" data-gallery-advance
+                    aria-label="@SiteText.T(Context, "NextImage")">
+                <img data-gallery-image alt="" draggable="false" decoding="async" />
+            </button>
+            <figcaption aria-live="polite" aria-atomic="true">
+                <span data-gallery-caption></span>
+                <span><span data-gallery-counter></span> / @Model.Images.Count</span>
+            </figcaption>
+        </figure>
+    </div>
+}
+
+<section class="section-block">
+    <div class="container-xxl">
+        <div class="section-band">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="section-title">@SiteText.T(Context, "RoomInterested")</h2>
+                    <p class="mb-0">@SiteText.T(Context, "RoomInterestedCopy")</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="btn btn-outline-primary mb-2" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "Availability")</a>
+                    <a class="btn btn-primary btn-lg" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "AskUs")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
