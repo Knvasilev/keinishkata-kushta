@@ -1,5 +1,6 @@
 using KeinishkataKushta.Data;
 using KeinishkataKushta.Models;
+using KeinishkataKushta.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +17,16 @@ namespace KeinishkataKushta.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var english = SiteText.Lang(HttpContext) == "en";
             var images = await _db.GalleryImages
                 .AsNoTracking()
                 .Where(image => image.RoomId == null)
-                .OrderByDescending(image => image.Id)
+                .OrderBy(image => image.SortOrder)
+                .ThenByDescending(image => image.Id)
                 .Select(image => new PropertyGalleryImageViewModel
                 {
                     FileName = image.FileName,
-                    Caption = image.Caption
+                    Caption = english && !string.IsNullOrEmpty(image.CaptionEn) ? image.CaptionEn : image.Caption
                 })
                 .ToListAsync();
 

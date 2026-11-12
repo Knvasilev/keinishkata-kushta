@@ -2,6 +2,7 @@ using System.Diagnostics;
 using KeinishkataKushta.Data;
 using KeinishkataKushta.Data.Entities;
 using KeinishkataKushta.Models;
+using KeinishkataKushta.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,7 @@ namespace KeinishkataKushta.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var english = SiteText.Lang(HttpContext) == "en";
             var publishedRooms = _db.Rooms
                 .AsNoTracking()
                 .Where(r => r.IsPublished);
@@ -40,9 +42,9 @@ namespace KeinishkataKushta.Controllers
                 .Select(r => new RoomCardViewModel
                 {
                     Id = r.Id,
-                    Name = r.Name,
+                    Name = english && !string.IsNullOrEmpty(r.NameEn) ? r.NameEn : r.Name,
                     Slug = r.Slug,
-                    Description = r.Description,
+                    Description = english && !string.IsNullOrEmpty(r.DescriptionEn) ? r.DescriptionEn : r.Description,
                     Capacity = r.Capacity,
                     PricePerNight = r.PricePerNight,
                     CoverFileName = r.GalleryImages
@@ -50,7 +52,8 @@ namespace KeinishkataKushta.Controllers
                         .Select(g => g.FileName)
                         .FirstOrDefault()
                         ?? r.GalleryImages
-                            .OrderByDescending(g => g.Id)
+                            .OrderBy(g => g.SortOrder)
+                            .ThenByDescending(g => g.Id)
                             .Select(g => g.FileName)
                             .FirstOrDefault()
                 })

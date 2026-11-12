@@ -1,0 +1,18 @@
+@model KeinishkataKushta.Web.Areas.Admin.Models.GalleryImagePositionViewModel
+
+<form asp-area="Admin" asp-controller="Gallery" asp-action="SetPosition" method="post" class="mt-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    @if (Model.RoomId.HasValue)
+    {
+        <input type="hidden" name="roomId" value="@Model.RoomId" />
+    }
+    <label for="photo-position-@Model.Id" class="form-label small">Position</label>
+    <div class="input-group input-group-sm">
+        <input id="photo-position-@Model.Id" name="position" type="number" class="form-control"
+               value="@Model.Position" min="1" max="@Model.Total" step="1" required
+               aria-label="Position for photo @Model.Id" />
+        <span class="input-group-text">/ @Model.Total</span>
+        <button type="submit" class="btn btn-outline-secondary" disabled="@(Model.Total < 2)">Move</button>
+    </div>
+</form>

@@ -11,6 +11,11 @@
 	<div class="alert alert-danger">@TempData["Err"]</div>
 }
 
+@if (TempData["Ok"] != null)
+{
+	<div class="alert alert-success">@TempData["Ok"]</div>
+}
+
 
 <form asp-area="Admin" asp-controller="Gallery" asp-action="Upload" method="post" enctype="multipart/form-data">
 	@Html.AntiForgeryToken()
@@ -18,20 +23,27 @@
 
 	<div class="form-check mb-3">
 		<input class="form-check-input" asp-for="Upload.IsCover" type="checkbox" />
-		<label class="form-check-label" asp-for="Upload.IsCover">Set as cover</label>
+		<label class="form-check-label" asp-for="Upload.IsCover">Use first photo as cover</label>
 	</div>
 
 	<div class="mb-3">
-		<label class="form-label">Image file</label>
-		<input asp-for="Upload.File" type="file" class="form-control" />
+		<label asp-for="Upload.Files" class="form-label">Photos</label>
+		<input asp-for="Upload.Files" type="file" class="form-control" multiple required
+			   accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+		<div class="form-text">Up to 20 photos. JPG, PNG, or WEBP. Maximum size: 5 MB each.</div>
 	</div>
 
 	<div class="mb-3">
-		<label class="form-label">Caption (optional)</label>
+		<label asp-for="Upload.Caption" class="form-label">Caption (Bulgarian, optional)</label>
 		<input asp-for="Upload.Caption" class="form-control" />
 	</div>
 
-	<button class="btn btn-primary" type="submit">Upload</button>
+	<div class="mb-3">
+		<label asp-for="Upload.CaptionEn" class="form-label">Caption (English, optional)</label>
+		<input asp-for="Upload.CaptionEn" class="form-control" maxlength="500" />
+	</div>
+
+	<button class="btn btn-primary" type="submit">Upload photos</button>
 	<a class="btn btn-secondary" asp-area="Admin" asp-controller="Room" asp-action="Index">Back to Rooms</a>
 </form>
 
@@ -44,8 +56,9 @@
 else
 {
 	<div class="row">
-		@foreach (var img in Model.Images)
+		@for (var index = 0; index < Model.Images.Count; index++)
 		{
+			var img = Model.Images[index];
 			<div class="col-md-3 mb-4">
 				<div class="card">
 					<img class="card-img-top"
@@ -53,7 +66,14 @@ else
 						 alt="@img.Caption" loading="lazy" decoding="async" style="aspect-ratio:4/3;object-fit:cover;" />
 
 					<div class="card-body">
-						<div class="small text-muted">@img.Caption</div>
+						@await Html.PartialAsync("_ImageCaptions", new KeinishkataKushta.Web.Areas.Admin.Models.GalleryImageCaptionViewModel
+						{
+							Id = img.Id, RoomId = Model.RoomId, Caption = img.Caption, CaptionEn = img.CaptionEn
+						})
+						@await Html.PartialAsync("_ImagePosition", new KeinishkataKushta.Web.Areas.Admin.Models.GalleryImagePositionViewModel
+						{
+							Id = img.Id, RoomId = Model.RoomId, Position = index + 1, Total = Model.Images.Count
+						})
 
 						@if (img.IsCover) // Badge for cover image
 						{

@@ -1,0 +1,21 @@
+@model KeinishkataKushta.Web.Areas.Admin.Models.GalleryImageCaptionViewModel
+
+<form asp-area="Admin" asp-controller="Gallery" asp-action="UpdateCaptions" method="post" class="mb-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    @if (Model.RoomId.HasValue)
+    {
+        <input type="hidden" name="roomId" value="@Model.RoomId" />
+    }
+    <div class="mb-2">
+        <label for="caption-bg-@Model.Id" class="form-label small">Caption (Bulgarian)</label>
+        <input asp-for="Caption" id="caption-bg-@Model.Id" class="form-control form-control-sm" maxlength="500" />
+        <span asp-validation-for="Caption" class="text-danger small"></span>
+    </div>
+    <div class="mb-2">
+        <label for="caption-en-@Model.Id" class="form-label small">Caption (English)</label>
+        <input asp-for="CaptionEn" id="caption-en-@Model.Id" class="form-control form-control-sm" maxlength="500" />
+        <span asp-validation-for="CaptionEn" class="text-danger small"></span>
+    </div>
+    <button type="submit" class="btn btn-sm btn-outline-primary">Save captions</button>
+</form>

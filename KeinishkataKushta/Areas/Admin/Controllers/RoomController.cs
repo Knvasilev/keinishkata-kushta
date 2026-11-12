@@ -32,7 +32,7 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
                     IsPublished = r.IsPublished,
                     CoverFileName =
                     r.GalleryImages.Where(g => g.IsCover).Select(g => g.FileName).FirstOrDefault()
-                ?? r.GalleryImages.OrderByDescending(g => g.Id).Select(g => g.FileName).FirstOrDefault()
+                ?? r.GalleryImages.OrderBy(g => g.SortOrder).ThenByDescending(g => g.Id).Select(g => g.FileName).FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -58,8 +58,10 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
             var room = new KeinishkataKushta.Data.Entities.Room
             {
                 Name = model.Name,
+                NameEn = string.IsNullOrWhiteSpace(model.NameEn) ? null : model.NameEn.Trim(),
                 Slug = slug,
                 Description = model.Description ?? string.Empty,
+                DescriptionEn = string.IsNullOrWhiteSpace(model.DescriptionEn) ? null : model.DescriptionEn.Trim(),
                 Capacity = model.Capacity,
                 PricePerNight = model.PricePerNight,
                 IsPublished = model.IsPublished
@@ -82,8 +84,10 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
             {
                 Id = room.Id,
                 Name = room.Name,
+                NameEn = room.NameEn,
                 Slug = room.Slug,
                 Description = room.Description,
+                DescriptionEn = room.DescriptionEn,
                 Capacity = room.Capacity,
                 PricePerNight = room.PricePerNight,
                 IsPublished = room.IsPublished
@@ -120,8 +124,10 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
             if (room == null) return NotFound();
 
             room.Name = model.Name;
+            room.NameEn = string.IsNullOrWhiteSpace(model.NameEn) ? null : model.NameEn.Trim();
             room.Slug = slug;
             room.Description = model.Description ?? string.Empty;
+            room.DescriptionEn = string.IsNullOrWhiteSpace(model.DescriptionEn) ? null : model.DescriptionEn.Trim();
             room.Capacity = model.Capacity;
             room.PricePerNight = model.PricePerNight;
             room.IsPublished = model.IsPublished;

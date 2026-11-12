@@ -11,6 +11,12 @@
     </div>
 
     <div>
+        <label asp-for="NameEn"></label><br />
+        <input asp-for="NameEn" maxlength="200" />
+        <span asp-validation-for="NameEn" class="text-danger"></span>
+    </div>
+
+    <div>
         <label asp-for="Slug"></label><br />
         <input asp-for="Slug" />
     </div>
@@ -18,6 +24,12 @@
     <div>
         <label asp-for="Description"></label><br />
         <textarea asp-for="Description" rows="5"></textarea>
+    </div>
+
+    <div>
+        <label asp-for="DescriptionEn"></label><br />
+        <textarea asp-for="DescriptionEn" rows="5" maxlength="4000"></textarea>
+        <span asp-validation-for="DescriptionEn" class="text-danger"></span>
     </div>
 
     <div>

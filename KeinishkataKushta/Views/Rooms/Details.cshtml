@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = Model.Name;
-    var cover = Model.Images.FirstOrDefault(i => i.IsCover) ?? Model.Images.FirstOrDefault();
+    var cover = Model.Images.FirstOrDefault();
 }
 
 <section class="container-xxl room-details-heading">

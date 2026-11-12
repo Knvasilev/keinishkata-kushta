@@ -28,12 +28,14 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
             var images = await _db.GalleryImages
                 .AsNoTracking()
                 .Where(image => image.RoomId == null)
-                .OrderByDescending(image => image.Id)
+                .OrderBy(image => image.SortOrder)
+                .ThenByDescending(image => image.Id)
                 .Select(image => new GalleryImageListItemViewModel
                 {
                     Id = image.Id,
                     FileName = image.FileName,
                     Caption = image.Caption,
+                    CaptionEn = image.CaptionEn,
                     IsCover = image.IsCover
                 })
                 .ToListAsync();
@@ -44,48 +46,20 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
         // POST: /Admin/Gallery/UploadProperty
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestSizeLimit(105 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 105 * 1024 * 1024)]
         public async Task<IActionResult> UploadProperty(
             [Bind(Prefix = "Upload")] PropertyGalleryUploadViewModel model)
         {
-            if (!ModelState.IsValid)
+            var error = GetUploadError(model.Files);
+            if (!ModelState.IsValid || error != null)
             {
-                TempData["Err"] = "Please choose an image file.";
+                TempData["Err"] = error ?? "Each caption must be no more than 500 characters.";
                 return RedirectToAction(nameof(Property));
             }
 
-            var ext = Path.GetExtension(model.File.FileName);
-            if (!AllowedExt.Contains(ext))
-            {
-                TempData["Err"] = "Only JPG, PNG, and WEBP images are allowed.";
-                return RedirectToAction(nameof(Property));
-            }
-
-            if (model.File.Length == 0 || model.File.Length > 5 * 1024 * 1024)
-            {
-                TempData["Err"] = "The image must be between 1 byte and 5 MB.";
-                return RedirectToAction(nameof(Property));
-            }
-
-            var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "property");
-            Directory.CreateDirectory(uploadsRoot);
-
-            var fileName = $"{Guid.NewGuid():N}{ext.ToLowerInvariant()}";
-            var physicalPath = Path.Combine(uploadsRoot, fileName);
-
-            await using (var stream = System.IO.File.Create(physicalPath))
-            {
-                await model.File.CopyToAsync(stream);
-            }
-
-            _db.GalleryImages.Add(new GalleryImage
-            {
-                RoomId = null,
-                FileName = fileName,
-                Caption = model.Caption?.Trim(),
-                IsCover = false
-            });
-
-            await _db.SaveChangesAsync();
+            await SaveUploadsAsync(model.Files, null, model.Caption, model.CaptionEn, false);
+            TempData["Ok"] = $"Uploaded {model.Files.Count} photo(s).";
             return RedirectToAction(nameof(Property));
         }
 
@@ -125,12 +99,14 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
             var images = await _db.GalleryImages
                 .AsNoTracking()
                 .Where(i => i.RoomId == roomId) // <-- if your FK name differs, change here
-                .OrderByDescending(i => i.Id)
+                .OrderBy(i => i.SortOrder)
+                .ThenByDescending(i => i.Id)
                 .Select(i => new GalleryImageListItemViewModel
                 {
                     Id = i.Id,
                     FileName = i.FileName,
                     Caption = i.Caption,
+                    CaptionEn = i.CaptionEn,
                     IsCover = i.IsCover
                 })
                 .ToListAsync();
@@ -149,62 +125,163 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
         // POST: /Admin/Gallery/Upload
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestSizeLimit(105 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 105 * 1024 * 1024)]
         public async Task<IActionResult> Upload([Bind(Prefix = "Upload")] GalleryUploadViewModel model)
         {
-            if (!ModelState.IsValid)
+            var error = GetUploadError(model.Files);
+            if (!ModelState.IsValid || error != null)
+            {
+                TempData["Err"] = error ?? "Please check the room and caption (maximum 500 characters).";
                 return RedirectToAction(nameof(Index), new { roomId = model.RoomId });
+            }
 
             var roomExists = await _db.Rooms.AnyAsync(r => r.Id == model.RoomId);
             if (!roomExists) return NotFound();
 
-            var ext = Path.GetExtension(model.File.FileName);
-            if (!AllowedExt.Contains(ext))
-            {
-                TempData["Err"] = "Only JPG, PNG, WEBP images are allowed.";
-                return RedirectToAction(nameof(Index), new { roomId = model.RoomId });
-            }
-
-            if (model.File.Length > 5 * 1024 * 1024)
-            {
-                TempData["Err"] = "Max file size is 5 MB.";
-                return RedirectToAction(nameof(Index), new { roomId = model.RoomId });
-            }
-
-            // ✅ If it's the first image, make it cover automatically (nice UX)
-            var hasAny = await _db.GalleryImages.AnyAsync(i => i.RoomId == model.RoomId);
-            var makeCover = model.IsCover || !hasAny;
-
-            // ✅ If we are setting a new cover, unset all other covers for this room
-            if (makeCover)
-            {
-                await _db.GalleryImages
-                    .Where(i => i.RoomId == model.RoomId && i.IsCover)
-                    .ExecuteUpdateAsync(s => s.SetProperty(x => x.IsCover, false));
-            }
-
-            var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "rooms", model.RoomId.ToString());
-            Directory.CreateDirectory(uploadsRoot);
-
-            var fileName = $"{Guid.NewGuid():N}{ext}";
-            var physicalPath = Path.Combine(uploadsRoot, fileName);
-
-            await using (var stream = System.IO.File.Create(physicalPath))
-            {
-                await model.File.CopyToAsync(stream);
-            }
-
-            var image = new GalleryImage
-            {
-                RoomId = model.RoomId,   // int -> int? OK
-                FileName = fileName,
-                Caption = model.Caption,
-                IsCover = makeCover       // ✅ save cover state
-            };
-
-            _db.GalleryImages.Add(image);
-            await _db.SaveChangesAsync();
+            await SaveUploadsAsync(model.Files, model.RoomId, model.Caption, model.CaptionEn, model.IsCover);
+            TempData["Ok"] = $"Uploaded {model.Files.Count} photo(s).";
 
             return RedirectToAction(nameof(Index), new { roomId = model.RoomId });
+        }
+
+        private static string? GetUploadError(IReadOnlyCollection<IFormFile>? files)
+        {
+            if (files == null || files.Count == 0)
+                return "Please choose at least one image file.";
+            if (files.Count > 20)
+                return "Please upload no more than 20 photos at a time.";
+
+            foreach (var file in files)
+            {
+                if (!AllowedExt.Contains(Path.GetExtension(file.FileName)))
+                    return "Only JPG, PNG, and WEBP images are allowed. No photos were uploaded.";
+                if (file.Length == 0 || file.Length > 5 * 1024 * 1024)
+                    return "Each image must be between 1 byte and 5 MB. No photos were uploaded.";
+            }
+
+            return null;
+        }
+
+        private async Task SaveUploadsAsync(List<IFormFile> files, int? roomId, string? caption, string? captionEn, bool isCover)
+        {
+            var uploadsRoot = roomId.HasValue
+                ? Path.Combine(_env.WebRootPath, "uploads", "rooms", roomId.Value.ToString())
+                : Path.Combine(_env.WebRootPath, "uploads", "property");
+            Directory.CreateDirectory(uploadsRoot);
+
+            var physicalPaths = new List<string>();
+            var images = new List<GalleryImage>();
+            try
+            {
+                foreach (var file in files)
+                {
+                    var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+                    var fileName = $"{Guid.NewGuid():N}{ext}";
+                    var physicalPath = Path.Combine(uploadsRoot, fileName);
+                    physicalPaths.Add(physicalPath);
+
+                    await using (var stream = System.IO.File.Create(physicalPath))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    images.Add(new GalleryImage
+                    {
+                        RoomId = roomId,
+                        FileName = fileName,
+                        Caption = caption?.Trim(),
+                        CaptionEn = string.IsNullOrWhiteSpace(captionEn) ? null : captionEn.Trim(),
+                        IsCover = false
+                    });
+                }
+
+                // Cover replacement and the whole batch commit together.
+                await using var transaction = await _db.Database.BeginTransactionAsync();
+                var lastPosition = await _db.GalleryImages
+                    .Where(image => image.RoomId == roomId)
+                    .MaxAsync(image => (int?)image.SortOrder) ?? -1;
+                for (var index = 0; index < images.Count; index++)
+                    images[index].SortOrder = lastPosition + index + 1;
+
+                if (roomId.HasValue)
+                {
+                    var hasAny = await _db.GalleryImages.AnyAsync(image => image.RoomId == roomId);
+                    if (isCover || !hasAny)
+                    {
+                        await _db.GalleryImages
+                            .Where(image => image.RoomId == roomId && image.IsCover)
+                            .ExecuteUpdateAsync(setters => setters.SetProperty(image => image.IsCover, false));
+                        images[0].IsCover = true;
+                    }
+                }
+
+                _db.GalleryImages.AddRange(images);
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                foreach (var physicalPath in physicalPaths)
+                {
+                    if (System.IO.File.Exists(physicalPath))
+                        System.IO.File.Delete(physicalPath);
+                }
+
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetPosition(int id, int position, int? roomId)
+        {
+            if (!ModelState.IsValid || position < 1) return BadRequest();
+
+            var images = await _db.GalleryImages
+                .Where(image => image.RoomId == roomId)
+                .OrderBy(image => image.SortOrder)
+                .ThenByDescending(image => image.Id)
+                .ToListAsync();
+            var image = images.FirstOrDefault(item => item.Id == id);
+            if (image == null) return NotFound();
+            if (position > images.Count) return BadRequest();
+
+            images.Remove(image);
+            images.Insert(position - 1, image);
+            for (var index = 0; index < images.Count; index++)
+                images[index].SortOrder = index;
+
+            await _db.SaveChangesAsync();
+            TempData["Ok"] = $"Photo moved to position {position}.";
+            return roomId.HasValue
+                ? RedirectToAction(nameof(Index), new { roomId })
+                : RedirectToAction(nameof(Property));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCaptions(GalleryImageCaptionViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Err"] = "Each caption must be no more than 500 characters.";
+                return model.RoomId.HasValue
+                    ? RedirectToAction(nameof(Index), new { roomId = model.RoomId })
+                    : RedirectToAction(nameof(Property));
+            }
+
+            var image = await _db.GalleryImages
+                .FirstOrDefaultAsync(item => item.Id == model.Id && item.RoomId == model.RoomId);
+            if (image == null) return NotFound();
+
+            image.Caption = string.IsNullOrWhiteSpace(model.Caption) ? null : model.Caption.Trim();
+            image.CaptionEn = string.IsNullOrWhiteSpace(model.CaptionEn) ? null : model.CaptionEn.Trim();
+            await _db.SaveChangesAsync();
+            TempData["Ok"] = "Photo captions saved.";
+            return model.RoomId.HasValue
+                ? RedirectToAction(nameof(Index), new { roomId = model.RoomId })
+                : RedirectToAction(nameof(Property));
         }
 
 

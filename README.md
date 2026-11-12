@@ -17,6 +17,14 @@ booking service. No guest database, admin account, or runtime uploads are includ
 - Admin login with hashed passwords, cookie authentication, login rate limiting,
   failed-attempt lockout, and antiforgery-protected form submissions.
 - Admin management of rooms, gallery images, contact messages, and blocked dates.
+- Batch uploads for room and property galleries: up to 20 photos, 5 MB each.
+- Numbered photo ordering for both galleries; room-card covers are selected separately.
+- Editable English room names, descriptions, and photo captions alongside the original content.
+
+See [Gallery Photo Ordering](docs/GALLERY-ORDERING.md) for migration commands
+and manual verification steps.
+See [English Content](docs/ENGLISH-CONTENT.md) to fill in translations for rooms
+and existing photos.
 
 ## Technical Decisions
 
@@ -76,6 +84,7 @@ keinishkata-kushta/
 │   └── KeinishkataKushta.Data.csproj   # Data project dependencies
 ├── tests/
 │   ├── Availability.Tests/            # .NET checks and isolated visual preview
+│   ├── GalleryUpload.Tests/           # Batch upload, cover, and rollback checks
 │   ├── availability-navigation.test.cjs
 │   └── gallery-interaction.test.cjs
 ├── AVAILABILITY.md                    # Calendar policy and manual test guide
@@ -126,12 +135,18 @@ From the solution folder:
 
 ```powershell
 dotnet run --project .\tests\Availability.Tests\Availability.Tests.csproj
+dotnet run --project .\tests\GalleryUpload.Tests\GalleryUpload.Tests.csproj
 node --test .\tests\availability-navigation.test.cjs .\tests\gallery-interaction.test.cjs
 ```
 
 The .NET checks cover date boundaries, overlap rules, SQL translation, model and
 migration consistency, validation, and authorization attributes. JavaScript tests
 cover gallery gestures and calendar navigation, focus, and error recovery.
+Gallery upload checks use a disposable SQLite database and temporary files to
+verify batch limits, cover selection, and cleanup after copy or database failures.
+They also verify photo reordering, gallery isolation, public display order, and
+the existing-photo order backfill in the ordering migration.
+They do not connect to the real SQL Server database or use uploaded guest-house photos.
 
 These do not replace database-backed integration tests, a deployment security
 review, or manual browser checks. See [AVAILABILITY.md](AVAILABILITY.md) for the

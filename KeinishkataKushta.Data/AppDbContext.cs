@@ -44,16 +44,19 @@ namespace KeinishkataKushta.Data
             modelBuilder.Entity<Room>(entity =>
             {
                 entity.Property(e => e.Name).HasMaxLength(200).IsRequired();
+                entity.Property(e => e.NameEn).HasMaxLength(200);
                 entity.Property(e => e.Slug).HasMaxLength(200).IsRequired();
                 entity.HasIndex(e=> e.Slug).IsUnique();
                 entity.Property(e => e.PricePerNight).HasColumnType("decimal(10,2)");
                 entity.Property(e => e.Description).HasMaxLength(4000);
+                entity.Property(e => e.DescriptionEn).HasMaxLength(4000);
             });
 
             modelBuilder.Entity<GalleryImage>(entity =>
             {
                 entity.Property(e => e.FileName).HasMaxLength(260).IsRequired();
                 entity.Property(e => e.Caption).HasMaxLength(500);
+                entity.Property(e => e.CaptionEn).HasMaxLength(500);
                 entity.HasIndex(e => e.RoomId);
                 entity.HasIndex(e => new { e.RoomId, e.IsCover })
                     .HasFilter("[IsCover] = 1 AND [RoomId] IS NOT NULL")
