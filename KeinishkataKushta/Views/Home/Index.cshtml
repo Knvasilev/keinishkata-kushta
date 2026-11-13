@@ -3,17 +3,25 @@
 @{
     ViewData["Title"] = SiteText.T(Context, "Home");
     var heroRoom = Model.FeaturedRooms.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.CoverFileName));
-    var heroLogo = Url.Content("~/images/branding/hero-clean.png");
 }
 
-<section class="hero-section hero-section-logo" style="background-image: linear-gradient(rgba(21, 66, 18, .26), rgba(21, 66, 18, .26)), url('@heroLogo');">
-    <div class="hero-panel">
-        <p class="eyebrow">@SiteText.T(Context, "Brand")</p>
-        <h1>@SiteText.T(Context, "HeroTitle")</h1>
-        <p class="hero-copy">@SiteText.T(Context, "HeroCopy")</p>
-        <div class="d-flex flex-wrap justify-content-center gap-3">
-            <a class="btn btn-primary btn-lg" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "ViewRooms")</a>
-            <a class="btn btn-outline-primary btn-lg" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "ContactUs")</a>
+<section class="editorial-hero" aria-labelledby="hero-title">
+    <div class="editorial-hero-layout">
+        <div class="editorial-hero-content">
+            <p class="editorial-hero-eyebrow">@SiteText.T(Context, "HeroEyebrow")</p>
+            <h1 id="hero-title">@SiteText.T(Context, "HeroTitle")</h1>
+            <p class="editorial-hero-copy">@SiteText.T(Context, "HeroCopy")</p>
+            <div class="editorial-hero-actions">
+                <a class="btn btn-primary" asp-controller="Gallery" asp-action="Index">@SiteText.T(Context, "HeroExplore")</a>
+                <a class="btn btn-outline-primary" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "HeroAvailability")</a>
+            </div>
+        </div>
+        <div class="editorial-hero-media">
+            <img src="~/images/branding/keinishkata-hero-1086.webp"
+                 srcset="@Url.Content("~/images/branding/keinishkata-hero-768.webp") 768w, @Url.Content("~/images/branding/keinishkata-hero-1086.webp") 1086w"
+                 sizes="(max-width: 767.98px) calc(100vw - 32px), (min-width: 1440px) 757px, calc(55vw - 35.2px)"
+                 alt="@SiteText.T(Context, "HeroImageAlt")" width="1086" height="1448"
+                 fetchpriority="high" decoding="async" />
         </div>
     </div>
 </section>
