@@ -1,5 +1,97 @@
 # Development log
 
+## 2026-11-16 — Finalize Phase 2.3 after desktop and mobile approval
+
+The owner gave final visual approval for the desktop four-column and refined
+single-column mobile contact panel, and explicitly authorized commit/push.
+Verified directory, `feature/website-redesign`, HEAD `0c55510`, empty index and
+exactly the four intended uncommitted Phase 2.3 files: homepage `Index.cshtml`,
+`site.css`, `docs/CONTACT-INFORMATION-PANEL.md` and this log. Reviewed the complete
+initial implementation and final mobile refinement; no unrelated changes.
+Repeated source checks: homepage outside the panel, all four contact anchors and
+localized/value references, and every non-contact CSS rule match HEAD. Hero,
+Header & Navigation and root foundations remain unchanged; no new visual edits.
+
+Recorded owner visual approval separately from remaining QA in the phase note.
+Fresh solution and both standalone harness builds passed with zero warnings/errors
+using `--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase23Verification/`.
+Fresh DLLs: Availability **14/14**, GalleryUpload **26/26**; all three Node suites
+**20/20** (**60 total**). Staged whitespace and documentation links passed.
+Commit message: `feat: redesign homepage contact information panel`.
+
+Read-only GitHub API confirmed PR #1 open, draft and unmerged before finalization.
+Commit hash, push/remote verification, clean worktree and post-push PR status are
+reported in the completion response. No PR mutation, main modification, new
+browser testing, production startup, database/EF action or Phase 2.4 work.
+Outstanding manual QA: BG/EN panel verification; wrapping/overflow at 320px and
+near 480px/481px; actual contact destinations/activation; keyboard focus;
+200% zoom/reflow; reduced motion. Owner visual approval does not imply those
+specific checks have passed.
+
+## 2026-11-16 — Phase 2.3 final narrow-mobile contact refinement
+
+Verified directory, `feature/website-redesign` and the existing four uncommitted
+Phase 2.3 files. Owner approved desktop and requested more readable narrow-phone
+email/address rows. Changed only the contact panel's narrow-media CSS block:
+480px replaces 374.98px; single-column rows keep 36px icons on the left, label
+above value, 12px gap, 88px minimum height and subtle horizontal separators.
+Icons are vertically centered. Scoped normal word breaks and emergency
+`overflow-wrap: break-word` to copy/values. No markup or behavior change.
+
+Updated the panel note. A temporary before/after source comparison confirmed all
+CSS outside that media block is identical; desktop/tablet, Hero, header and
+following sections remain untouched. Rule inspection covers 320/375/390/480px as
+one column, 481/768px as two and 1440px as four. BG/EN references, contact values,
+destinations and keyboard semantics are unchanged; no browser result is implied.
+
+Repeated solution and both harness builds with the existing Phase23Verification
+isolated output: zero warnings/errors. Availability **14/14**, GalleryUpload
+**26/26**, all Node suites **20/20** passed (**60 total**). Diff whitespace and
+documentation links passed. No new browser run: earlier preview/selection
+failures remain the limitation. Both languages at the seven requested widths
+still need final visual wrapping/overflow, keyboard focus and contact-link
+activation review. No commit, push, PR modification, production startup or data
+change. Desktop approval is owner-provided; final mobile review is pending.
+
+## 2026-11-16 — Phase 2.3 light contact information panel
+
+Verified solution directory, `feature/website-redesign`, HEAD `0c55510` and clean
+working tree. Read the assignment and project/design-system/navigation guidance.
+Audited the homepage-only contact strip, SiteContact/SiteText sources, targets,
+breakpoints and following conditional room summary/About sections.
+
+Replaced the heavy green/gold strip with a single ivory, bordered, rounded panel.
+Added small decorative inline icons (Facebook reuses the licensed bundled path),
+muted labels, green values, wrapping and green focus outlines. Retained all four
+anchor destinations/attributes and localization/value references, including the
+email's existing Contact form destination. Four desktop columns become two below
+1200px, compact stacked-icon cells below 768px and one column below 375px. Reused
+only existing tokens, with no new dependencies, assets, JavaScript or animation.
+Full details and manual checklist: [Contact Information Panel](docs/CONTACT-INFORMATION-PANEL.md).
+
+Changed only homepage `Views/Home/Index.cshtml`, `wwwroot/css/site.css`, the new
+phase note and this log. A temporary source comparison confirmed all homepage
+markup outside the panel and all non-contact CSS rules equal HEAD, including
+Hero/header/root tokens and following sections; all four anchor opening tags and
+localized/value references are unchanged. SiteContact, SiteText, language logic,
+footer, rooms, galleries, calendar, forms, controllers and data/schema unchanged.
+
+Verification: solution and both harness builds passed with zero warnings/errors
+using `--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase23Verification/`.
+Fresh DLLs passed Availability **14/14**, GalleryUpload **26/26**; all three Node
+suites passed **20/20** (**60 checks total**). Existing isolated-output procedure
+avoided interrupting the owner-run app. Selected text/icon/focus color pairs
+calculate at least **7.98:1** contrast; details are in the note. Final diff,
+documentation links and `git diff --check` passed.
+
+No new browser session: prior isolated previews in this chat timed out and native
+browser selection previously failed. No rendered BG/EN viewport, keyboard/focus,
+zoom/reflow, reduced-motion or contact click-through result is claimed. Manual
+review at 320/375/390/768/1024/1440px, breakpoint boundaries, long/empty/missing-photo
+states and offline calendar remains required. No production host/database/EF
+startup or enquiry submission. No commit, push, merge or draft PR modification.
+Implementation is uncommitted for manual visual review.
+
 ## 2026-11-16 — Finalize Phase 2.2 after visual approval
 
 The owner approved desktop and mobile visuals and explicitly authorized the
