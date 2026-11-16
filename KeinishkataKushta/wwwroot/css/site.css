@@ -174,6 +174,23 @@ a {
   background: var(--kk-cream-strong);
 }
 
+.site-header .nav-link[aria-current] {
+  color: var(--kk-green);
+  background: var(--kk-cream-strong);
+}
+
+.site-header a:focus-visible,
+.site-header .navbar-toggler:focus-visible {
+  outline: 2px solid var(--kk-focus);
+  outline-offset: 3px;
+}
+
+.site-header .nav-link {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
 .navbar-toggler {
   display: grid;
   width: 48px;
@@ -205,6 +222,18 @@ a {
   background: currentColor;
 }
 
+.navbar-toggler[aria-expanded="true"] .site-menu-icon span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.navbar-toggler[aria-expanded="true"] .site-menu-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggler[aria-expanded="true"] .site-menu-icon span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
 .site-actions {
   display: flex;
   align-items: center;
@@ -222,7 +251,10 @@ a {
 }
 
 .language-switch a {
-  min-width: 40px;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
   padding: 7px 10px;
   border-radius: var(--kk-radius-pill);
   color: var(--kk-muted);
@@ -1385,6 +1417,63 @@ textarea.form-control {
   text-underline-offset: 3px;
 }
 
+/* Match navbar-expand-xl: retain the in-flow menu while the full bilingual
+   brand, links and actions would compete for horizontal space. */
+@media (max-width: 1199.98px) {
+  .site-header {
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .site-header .navbar > .container-xxl {
+    padding-inline: var(--kk-space-4);
+  }
+
+  .site-header .navbar-collapse {
+    padding-top: var(--kk-space-2);
+  }
+
+  .site-header .navbar-nav {
+    gap: 0;
+  }
+
+  .site-header .nav-link {
+    min-height: 48px;
+    padding: var(--kk-space-3);
+    overflow-wrap: anywhere;
+  }
+
+  .site-header .site-brand {
+    min-width: 0;
+    max-width: calc(100% - 64px);
+    margin-right: 0;
+  }
+
+  .site-header .site-brand span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .site-header .navbar-toggler {
+    flex-shrink: 0;
+  }
+
+  .site-header .site-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--kk-space-3);
+    margin-top: var(--kk-space-2);
+    padding-top: var(--kk-space-3);
+    border-top: 1px solid var(--kk-border);
+  }
+
+  .site-header .language-switch {
+    width: max-content;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 991.98px) {
   h1,
   .page-heading h1,
@@ -1396,24 +1485,6 @@ textarea.form-control {
   h2,
   .section-title {
     font-size: 2rem;
-  }
-
-  .navbar-collapse {
-    padding-top: 18px;
-  }
-
-  .site-brand {
-    min-width: 0;
-  }
-
-  .site-actions {
-    align-items: stretch;
-    flex-direction: column;
-    margin-top: 18px;
-  }
-
-  .language-switch {
-    width: max-content;
   }
 
   .editorial-hero-content {

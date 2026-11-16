@@ -1,5 +1,86 @@
 # Development log
 
+## 2026-11-16 — Finalize Phase 2.2 after visual approval
+
+The owner approved desktop and mobile visuals and explicitly authorized the
+Phase 2.2 commit and push. Verified directory, `feature/website-redesign`, HEAD
+`c0a6380`, empty index and exactly the eight expected Phase 2.2 files. Reviewed
+the entire tracked diff plus all three new files; no unexpected/unrelated changes.
+Hero markup/assets, root design-system foundations and unrelated files remain
+unchanged. Updated the phase notes to distinguish owner-provided visual approval
+from browser/keyboard checks not performed by the agent.
+
+Repeated solution and both standalone harness builds with `--no-restore -m:1
+-v:minimal -p:BaseOutputPath=bin/Phase22Verification/`: all passed, zero warnings
+and errors. Executed the freshly built DLLs: Availability **14/14**, GalleryUpload
+**26/26**. All three Node suites passed **20/20**, including six navigation checks
+(**60 total**). Staged whitespace and documentation links passed verification.
+Only the four header/localization/CSS/JS files, navigation tests and three related
+documentation files are included. Commit message:
+`feat: refine responsive header navigation and accessibility`.
+
+GitHub read-only API confirmed PR #1 open with `draft: true` before committing.
+The GitHub CLI is unavailable; the API lookup needed network access outside the
+sandbox after DNS failed inside it. No PR mutation/merge or Phase 2.3 work.
+Commit hash, push result and post-push verification are reported in the completion
+response. No production web startup, EF commands, database changes or new browser
+testing during finalization. Exact visual-review viewport/language coverage was
+not supplied. Keyboard/assistive technology, zoom/reflow, reduced motion,
+language/navigation/CTA click-through, short-screen/long/empty/missing-photo
+edge cases and offline calendar browser checks remain unverified manual QA.
+
+## 2026-11-16 — Phase 2.2 header and navigation refinement
+
+Verified solution directory, `feature/website-redesign`, HEAD `c0a6380` and a
+clean working tree. Read the required project documents and design-system notes;
+inspected shared layout, CSS, Bootstrap collapse, localization and public routes.
+The old mobile menu inherited 12px row gaps and 18px outer spacing, had English
+control names and no current-page indicator, close icon or Escape enhancement.
+
+Kept one in-flow Bootstrap menu and the approved brand/link/language/CTA order.
+Mobile rows are approximately 50px (48px minimum) with no gap; secondary controls
+have a divider and consistent spacing, 44px language targets and a full-width CTA.
+Added wrapping and viewport-bounded header scrolling for small/short screens.
+Moved only the header expansion boundary from 992px to 1200px to allow space for
+the bilingual desktop contents; exact fit awaits rendered review. Header height
+rules and the desktop arrangement remain intact. Reused existing green, cream,
+border, focus and spacing tokens; no new tokens, dependencies or animation.
+
+Added route-aware `aria-current` (exact page, Rooms parent location on details),
+restrained current-link styling, header focus outlines and CSS hamburger/X states.
+New `navigation.js` follows Bootstrap events for localized action names, handles
+Escape/focus return and keeps focus visible across the collapse breakpoint.
+Bootstrap retains native activation, expanded state and visibility ownership.
+Localized navigation/language groups with `SiteText`. Header language return URLs
+now remove an old `lang` query so it cannot override a newly selected cookie;
+other query parameters and PathBase are retained. Controller/cookie logic unchanged.
+
+Files changed: public `_Layout.cshtml`, `Infrastructure/SiteText.cs`, `site.css`,
+new `wwwroot/js/navigation.js`, new `tests/header-navigation.test.cjs`,
+`docs/DESIGN-SYSTEM.md`, new [header navigation notes](docs/HEADER-NAVIGATION.md),
+and this log. Hero, photography, contact strip, footer, forms, galleries, calendar,
+admin, entities/schema/migrations and guest data were not changed.
+
+Verification: solution and both standalone harness builds passed with zero
+warnings/errors using `--no-restore -m:1 -v:minimal
+-p:BaseOutputPath=bin/Phase22Verification/`, following the documented isolated
+output procedure rather than interrupting the owner-run Visual Studio site.
+Fresh harness DLLs passed Availability **14/14** and GalleryUpload **26/26**.
+Existing Node suites passed **14/14**; six new navigation simulations also passed
+(**60 total checks**). Final source/diff review covers route targets, current-page
+matching, BG/EN labels, Bootstrap hidden-state behavior and unchanged Hero rules.
+Local documentation links and `git diff --check` passed.
+
+Browser limitation: the existing isolated Availability preview reported listening
+on loopback, with a Data Protection key-ring access-denied warning. The in-app
+browser failed with `net::ERR_CONNECTION_TIMED_OUT` before rendering. Stopped the
+preview; no production web startup, EF commands or database connection. No actual
+BG/EN viewport, keyboard, zoom/reflow, reduced-motion or link click-through checks
+were completed. Both menu states at 320/375/390/768/1024/1440px and near 1200px,
+short screens, long/empty/missing-photo states and offline calendar recovery remain
+manual QA. Full checklist and test command are in the linked notes. Manual visual
+approval is pending. No commit, push, merge, branch switch or draft PR modification.
+
 ## 2026-11-16 — Finalize Phase 2.1 after desktop approval
 
 The owner approved the desktop appearance and explicitly authorized the Phase

@@ -145,6 +145,12 @@ repository and are excluded from the commit. The draft PR status is unchanged.
 
 ## Phase 2.2 — Header & Navigation recommendations
 
+Implemented scope and verification are now recorded in
+[Header & Navigation Refinement](HEADER-NAVIGATION.md). The original recommendations
+below remain the manual review baseline. The owner approved Phase 2.2 desktop
+and mobile visuals on 2026-11-16; detailed interaction/accessibility browser
+verification remains outstanding as recorded in the linked notes.
+
 Capture bilingual baselines first, including long English navigation, 320px width,
 expanded mobile menu, 200% zoom and 400% reflow. Then separately review localized
 Menu/Language accessible names, skip link, route-aware `aria-current`, language
