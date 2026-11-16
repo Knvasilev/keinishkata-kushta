@@ -1,6 +1,14 @@
 @{
     var lang = SiteText.Lang(Context);
-    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
+    // Let the selected language cookie take effect even when this page used ?lang=.
+    var returnUrl = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(
+        $"{Context.Request.PathBase}{Context.Request.Path}",
+        Context.Request.Query.Where(pair => !string.Equals(pair.Key, "lang", StringComparison.OrdinalIgnoreCase)));
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    bool IsCurrent(string name, string page = "Index") =>
+        string.Equals(controller, name, StringComparison.OrdinalIgnoreCase)
+        && string.Equals(action, page, StringComparison.OrdinalIgnoreCase);
 }
 
 <!DOCTYPE html>
@@ -19,13 +27,15 @@
 </head>
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-xl" aria-label="@SiteText.T(Context, "MainNavigation")">
             <div class="container-xxl">
                 <a class="navbar-brand site-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/images/branding/keinishkata-logo.png" alt="@SiteText.T(Context, "Brand")" />
                     <span>@SiteText.T(Context, "Brand")</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNavbar" aria-controls="siteNavbar" aria-expanded="false" aria-label="Menu">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#siteNavbar" aria-controls="siteNavbar" aria-expanded="false"
+                        aria-label="@SiteText.T(Context, "OpenMenu")" data-site-menu-toggle
+                        data-label-open="@SiteText.T(Context, "OpenMenu")" data-label-close="@SiteText.T(Context, "CloseMenu")">
                     <span class="site-menu-icon" aria-hidden="true">
                         <span></span>
                         <span></span>
@@ -35,28 +45,28 @@
                 <div class="collapse navbar-collapse" id="siteNavbar">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@SiteText.T(Context, "Home")</a>
+                            <a class="nav-link" aria-current="@(IsCurrent("Home") ? "page" : null)" asp-area="" asp-controller="Home" asp-action="Index">@SiteText.T(Context, "Home")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "Rooms")</a>
+                            <a class="nav-link" aria-current="@(IsCurrent("Rooms") ? "page" : IsCurrent("Rooms", "Details") ? "location" : null)" asp-area="" asp-controller="Rooms" asp-action="Index">@SiteText.T(Context, "Rooms")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Gallery" asp-action="Index">@SiteText.T(Context, "Gallery")</a>
+                            <a class="nav-link" aria-current="@(IsCurrent("Gallery") ? "page" : null)" asp-area="" asp-controller="Gallery" asp-action="Index">@SiteText.T(Context, "Gallery")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Places" asp-action="Index">@SiteText.T(Context, "NearbyPlaces")</a>
+                            <a class="nav-link" aria-current="@(IsCurrent("Places") ? "page" : null)" asp-area="" asp-controller="Places" asp-action="Index">@SiteText.T(Context, "NearbyPlaces")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "Contact")</a>
+                            <a class="nav-link" aria-current="@(IsCurrent("Home", "Contact") ? "page" : null)" asp-area="" asp-controller="Home" asp-action="Contact">@SiteText.T(Context, "Contact")</a>
                         </li>
                     </ul>
 
                     <div class="site-actions">
-                        <div class="language-switch" aria-label="Language">
-                            <a class="@(lang == "bg" ? "active" : null)" asp-controller="Language" asp-action="Set" asp-route-lang="bg" asp-route-returnUrl="@returnUrl">BG</a>
-                            <a class="@(lang == "en" ? "active" : null)" asp-controller="Language" asp-action="Set" asp-route-lang="en" asp-route-returnUrl="@returnUrl">EN</a>
+                        <div class="language-switch" role="group" aria-label="@SiteText.T(Context, "Language")">
+                            <a class="@(lang == "bg" ? "active" : null)" lang="bg" aria-label="Български" asp-controller="Language" asp-action="Set" asp-route-lang="bg" asp-route-returnUrl="@returnUrl">BG</a>
+                            <a class="@(lang == "en" ? "active" : null)" lang="en" aria-label="English" asp-controller="Language" asp-action="Set" asp-route-lang="en" asp-route-returnUrl="@returnUrl">EN</a>
                         </div>
-                        <a class="btn btn-primary site-booking-btn" asp-area="" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "Availability")</a>
+                        <a class="btn btn-primary site-booking-btn" aria-current="@(IsCurrent("Availability") ? "page" : null)" asp-area="" asp-controller="Availability" asp-action="Index">@SiteText.T(Context, "Availability")</a>
                     </div>
                 </div>
             </div>
@@ -101,6 +111,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/navigation.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
