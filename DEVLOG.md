@@ -1,5 +1,80 @@
 # Development log
 
+## 2026-11-16 — Finalize Phase 2.4 after desktop and mobile approval
+
+The owner approved the desktop/mobile design and explicitly authorized commit and
+push with `feat: polish room cards and document content readiness`. Verified
+solution directory, branch `feature/website-redesign`, HEAD `06695f5`, empty index
+and exactly the twelve intended Phase 2.4 source/test/documentation files.
+Reviewed the entire diff and both new files; no unrelated work was found.
+Recorded owner approval in the phase note separately from outstanding QA.
+
+Hero, navigation, contact panel and unrelated application behavior are preserved.
+No real app/EF startup, database connection, record edit, upload change, test-price
+change, capacity change or booking-logic change. Test price/capacity assignments
+are confined to the isolated SQLite harness and synthetic preview fixture.
+
+Final solution and both standalone harness builds with
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase24Verification/` passed
+with zero warnings/errors. Fresh harness DLLs: Availability **14/14**,
+GalleryUpload **28/28**; all three Node suites **20/20** (**62 total**).
+Staged whitespace and local documentation links passed. Only the twelve approved
+files are staged; ignored build output and runtime uploads are excluded.
+Commit/push hashes, remote verification and final status are reported in the
+completion response. No PR merge/status mutation or next-phase work.
+
+Production-content tasks remain: authentic room photographs; complete Bulgarian
+and English names/descriptions; owner-confirmed prices and capacities; remaining
+responsive edge cases, accessibility and interaction checks listed in
+[Room cards](docs/ROOM-CARDS.md). No new browser tests were performed during
+finalization. Owner visual approval does not imply each listed check passed.
+
+## 2026-11-16 — Phase 2.4 room cards and homepage polish
+
+Verified solution directory, branch `feature/website-redesign`, HEAD `06695f5`
+and a clean working tree. Read required project/feature/design-system guidance.
+Audited Room entity/mappings, public projections/details, bilingual admin forms
+and saves, photo associations/order/cover, summary pricing and homepage sections.
+
+Refined shared cards to explicit 3/2/1 columns, stable 4:3 media, price below
+wrapping serif title, restrained border/shadow, wrapping footer and one bottom
+Details link with a room-specific accessible name, 44px target and focus outline.
+Retained three-line description previews with full text on Details. Added a
+web-root file-provider availability helper and localized missing-photo placeholder;
+About uses the same check and the selected room name as alt text. Admin room forms
+now expose missing validation feedback and explain independent translation fallback.
+Hero/header/contact panel and all other homepage content/layout remain unchanged.
+
+No bilingual binding/save or summary calculation bug found. Original BG fields
+are not guaranteed to contain Bulgarian: owner-reported English-in-BG values,
+missing translations, temporary photos and prices remain manual content tasks.
+No runtime database/upload inventory was read; the screenshot's owning room is
+unverified. No records/files, schema/migrations, pricing policy, capacities, slugs,
+booking code, licensed assets or dependencies changed.
+
+Added isolated tests for photo file availability/room isolation and published-only
+summary/empty-state calculations. Extended the existing safe preview resource
+filter with synthetic bilingual home cards/empty state; it never runs controllers
+or database queries. See [Room cards](docs/ROOM-CARDS.md) for full audit, cleanup
+checklist, changed-file scope, preview instructions and manual QA; updated the
+availability preview description to match.
+
+Verification: final solution and both harness builds using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase24Verification/` passed
+with zero warnings/errors. Initial preview compilation had a local variable name
+collision; corrected before the successful build. Fresh harness DLLs passed
+Availability **14/14**, GalleryUpload **28/28**; all Node suites **20/20**
+(**62 total**). Final diff/whitespace and local documentation links checked.
+
+Browser navigation to the isolated loopback host failed with
+`net::ERR_CONNECTION_TIMED_OUT`. A direct HTTP HTML check failed socket permissions
+and timed out after an approved retry. Host reported listening plus a Data
+Protection key-ring access warning; stopped afterwards. No rendered HTML assertion,
+screenshot, BG/EN breakpoint, keyboard, zoom/reflow, reduced-motion or live admin
+verification was completed. See phase note for the full outstanding QA matrix.
+No real app/EF startup, SQL Server connection, commit, push, branch switch or PR edit.
+
+
 ## 2026-11-16 — Finalize Phase 2.3 after desktop and mobile approval
 
 The owner gave final visual approval for the desktop four-column and refined

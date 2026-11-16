@@ -16,6 +16,38 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 var tests = new (string Name, Func<Task> Run)[]
 {
+    ("Room-photo fallback checks the associated file without crossing room directories", async () =>
+    {
+        await using var fixture = await Fixture.Create();
+        var directory = Path.Combine(fixture.Root, "uploads", "rooms", "1");
+        Directory.CreateDirectory(directory);
+        await File.WriteAllBytesAsync(Path.Combine(directory, "present.jpg"), new byte[] { 1 });
+        await File.WriteAllBytesAsync(Path.Combine(directory, "empty.jpg"), Array.Empty<byte>());
+        using var provider = new PhysicalFileProvider(fixture.Root);
+        Check(KeinishkataKushta.Infrastructure.RoomPhoto.Exists(provider, 1, "present.jpg"));
+        foreach (var name in new string?[] { null, "", " ", "missing.jpg", "empty.jpg", "../present.jpg", "..\\present.jpg", "C:present.jpg" })
+            Check(!KeinishkataKushta.Infrastructure.RoomPhoto.Exists(provider, 1, name));
+        Check(!KeinishkataKushta.Infrastructure.RoomPhoto.Exists(provider, 2, "present.jpg"));
+        Check(!KeinishkataKushta.Infrastructure.RoomPhoto.Exists(provider, 0, "present.jpg"));
+    }),
+    ("Homepage statistics and featured cards use only published rooms", async () =>
+    {
+        await using var fixture = await Fixture.Create();
+        var first = (await fixture.Db.Rooms.FindAsync(1))!;
+        first.PricePerNight = 80; first.Capacity = 3;
+        var hidden = (await fixture.Db.Rooms.FindAsync(2))!;
+        hidden.IsPublished = false; hidden.PricePerNight = 1; hidden.Capacity = 99;
+        await fixture.Db.SaveChangesAsync();
+        var controller = fixture.InLanguage(new KeinishkataKushta.Controllers.HomeController(
+            fixture.Db, NullLogger<KeinishkataKushta.Controllers.HomeController>.Instance), "bg");
+        var model = (KeinishkataKushta.Models.HomeIndexViewModel)((ViewResult)await controller.Index()).Model!;
+        Check(model.TotalRooms == 1 && model.MaxRoomCapacity == 3 && model.StartingPricePerNight == 80);
+        Check(model.FeaturedRooms.Single().Id == 1 && model.FeaturedRooms[0].CoverFileName == null);
+        first.IsPublished = false;
+        await fixture.Db.SaveChangesAsync();
+        model = (KeinishkataKushta.Models.HomeIndexViewModel)((ViewResult)await controller.Index()).Model!;
+        Check(model.TotalRooms == 0 && model.MaxRoomCapacity == 0 && model.StartingPricePerNight == 0 && model.FeaturedRooms.Count == 0);
+    }),
     ("English room names and descriptions appear on the homepage, list, and details", async () =>
     {
         await using var fixture = await Fixture.Create();

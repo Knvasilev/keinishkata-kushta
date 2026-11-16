@@ -112,5 +112,6 @@ dates and no database access:
 dotnet run --project .\tests\Availability.Tests\Availability.Tests.csproj -- --preview --contentRoot "$PWD\KeinishkataKushta"
 ```
 
-It listens only on `http://127.0.0.1:5192/Availability`, blocks other actions, and
-is not the real booking calendar. Stop it with Ctrl+C after previewing.
+It listens on loopback. `/Availability` renders the sample calendar; `/` now
+renders a synthetic homepage for [room-card QA](docs/ROOM-CARDS.md). Other actions
+are blocked. Neither page reads the real database. Stop it with Ctrl+C after previewing.

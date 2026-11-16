@@ -34,7 +34,36 @@ internal static class PreviewHost
         public int Order => int.MinValue;
         public Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
-            // Only the public calendar is previewed; all other actions are blocked.
+            // Synthetic homepage data; never instantiate a controller or query storage.
+            if (context.RouteData.Values["controller"]?.ToString() == "Home"
+                && context.RouteData.Values["action"]?.ToString() == "Index"
+                && !context.RouteData.Values.ContainsKey("area") && HttpMethods.IsGet(context.HttpContext.Request.Method))
+            {
+                var english = SiteText.Lang(context.HttpContext) == "en";
+                var rooms = Enumerable.Range(1, 3).Select(id => new RoomCardViewModel
+                {
+                    Id = id, Slug = $"preview-room-{id}", Capacity = id + 1, PricePerNight = 50 + id * 10,
+                    Name = english ? $"Preview room {id} with a long descriptive name" : $"Примерна стая {id} с дълго описателно име",
+                    Description = id == 1 ? "" : string.Join(" ", Enumerable.Repeat(english
+                        ? "Sample content for checking natural wrapping and the details action."
+                        : "Примерно съдържание за проверка на пренасянето и връзката към детайлите.", id * 3)),
+                    CoverFileName = id == 2 ? "missing-preview-photo.jpg" : null
+                }).ToList();
+                var homeViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<HomeIndexViewModel>(
+                    new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), context.ModelState)
+                {
+                    Model = new HomeIndexViewModel
+                    {
+                        FeaturedRooms = context.HttpContext.Request.Query.ContainsKey("empty") ? new() : rooms,
+                        TotalRooms = context.HttpContext.Request.Query.ContainsKey("empty") ? 0 : 3,
+                        MaxRoomCapacity = 4, StartingPricePerNight = 60
+                    }
+                };
+                context.HttpContext.Response.Headers.CacheControl = "no-store";
+                context.Result = new ViewResult { ViewName = "/Views/Home/Index.cshtml", ViewData = homeViewData };
+                return Task.CompletedTask;
+            }
+            // Only fixture pages are previewed; all other actions are blocked.
             if (context.RouteData.Values["controller"]?.ToString() != "Availability"
                 || context.RouteData.Values.ContainsKey("area") || !HttpMethods.IsGet(context.HttpContext.Request.Method))
             {

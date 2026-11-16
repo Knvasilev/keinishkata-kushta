@@ -92,6 +92,7 @@ namespace KeinishkataKushta.Infrastructure
             ["OpenMenu"] = ("Отвори менюто", "Open menu"),
             ["CloseMenu"] = ("Затвори менюто", "Close menu"),
             ["Language"] = ("Език", "Language"),
+            ["RoomPhotoUnavailable"] = ("Няма налична снимка", "No photo available"),
             ["Rooms"] = ("Стаи", "Rooms"),
             ["NearbyPlaces"] = ("Забележителности", "Nearby Places"),
             ["Contact"] = ("Контакти", "Contact"),

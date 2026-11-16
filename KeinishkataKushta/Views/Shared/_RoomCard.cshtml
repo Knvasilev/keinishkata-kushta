@@ -1,20 +1,17 @@
 @model RoomCardViewModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
 
 <article class="room-card h-100">
-    <a class="room-card-media"
-       asp-controller="Rooms"
-       asp-action="Details"
-       asp-route-slug="@Model.Slug">
-        @if (!string.IsNullOrWhiteSpace(Model.CoverFileName))
+    <div class="room-card-media">
+        @if (RoomPhoto.Exists(HostEnvironment.WebRootFileProvider, Model.Id, Model.CoverFileName))
         {
             <img class="room-card-image" src="~/uploads/rooms/@Model.Id/@Model.CoverFileName" alt="@Model.Name" loading="lazy" decoding="async" />
         }
         else
         {
-            <span class="room-card-placeholder">@SiteText.T(Context, "Brand")</span>
+            <span class="room-card-placeholder">@SiteText.T(Context, "RoomPhotoUnavailable")</span>
         }
-        <span class="room-card-media-label">@SiteText.T(Context, "Details")</span>
-    </a>
+    </div>
 
     <div class="room-card-body">
         <div class="room-card-title-row">
@@ -34,7 +31,7 @@
             <a class="btn btn-sm btn-outline-primary"
                asp-controller="Rooms"
                asp-action="Details"
-               asp-route-slug="@Model.Slug">@SiteText.T(Context, "Details")</a>
+               asp-route-slug="@Model.Slug">@SiteText.T(Context, "Details")<span class="visually-hidden">: @Model.Name</span></a>
         </div>
     </div>
 </article>

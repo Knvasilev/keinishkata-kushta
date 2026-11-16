@@ -1,8 +1,9 @@
 @model HomeIndexViewModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
 
 @{
     ViewData["Title"] = SiteText.T(Context, "Home");
-    var heroRoom = Model.FeaturedRooms.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.CoverFileName));
+    var heroRoom = Model.FeaturedRooms.FirstOrDefault(r => RoomPhoto.Exists(HostEnvironment.WebRootFileProvider, r.Id, r.CoverFileName));
 }
 
 <section class="editorial-hero" aria-labelledby="hero-title">
@@ -125,7 +126,7 @@
                 @if (heroRoom != null)
                 {
                     <div class="image-zoom-frame about-image">
-                        <img src="~/uploads/rooms/@heroRoom.Id/@heroRoom.CoverFileName" alt="@SiteText.T(Context, "Brand")" loading="lazy" decoding="async" />
+                        <img src="~/uploads/rooms/@heroRoom.Id/@heroRoom.CoverFileName" alt="@heroRoom.Name" loading="lazy" decoding="async" />
                     </div>
                 }
                 else
