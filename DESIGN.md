@@ -1,5 +1,9 @@
 # Current design audit and future considerations
 
+For the implemented 2026-11-13 Phase 2.1 foundations and approved editorial Hero
+baseline, see [Design System Foundations](docs/DESIGN-SYSTEM.md). The source audit
+below remains a historical record of the earlier implementation.
+
 2026-11-12 source audit at `b95618a`. Findings below come from Razor, CSS, JavaScript and controllers. No live application, browser screenshot, performance measurement, contrast measurement, or assistive-technology session was used. Distinguish definite source defects from layout risks that need rendering. This document proposes future work; no redesign was implemented.
 
 ## Existing visual system

@@ -1,5 +1,89 @@
 # Development log
 
+## 2026-11-16 — Finalize Phase 2.1 after desktop approval
+
+The owner approved the desktop appearance and explicitly authorized the Phase
+2.1 commit and push to `origin/feature/website-redesign`. Verified the solution
+directory, branch and full working diff against `f741032`. Only `site.css`,
+`DESIGN.md`, `docs/DESIGN-SYSTEM.md` and this log belong to this increment.
+Reviewed the token inventory against the documentation; no CSS correction or
+visual regression was identified in source. Hero Razor, translations, photo
+references and CTA destinations are unchanged. Repeated the root-token expansion
+comparison: all non-root CSS rules equal the approved baseline, including shared
+Contact form/card styles and responsive rules. Contact was the representative
+non-homepage source review; this does not establish rendered visual equality.
+
+Fresh normal-output solution/harness builds failed with MSB3027/MSB3021 because
+the existing running website locked its output DLL. Left the owner's Visual
+Studio process running. Built the solution and both standalone harnesses with
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase21Verification/` instead:
+all passed with zero warnings/errors. Executed those freshly built harness DLLs:
+Availability **14/14**, GalleryUpload **26/26** passed. Node suites **14/14** passed
+(**54 checks total**). These output folders are covered by the existing bin ignore
+rule; no project/dependency configuration was changed.
+
+Browser inventory found an already open Chrome homepage. Computer Use stopped
+when selecting it because it could not determine the current browser URL with
+enough confidence to enforce policy. No page interaction, new screenshot,
+BG/EN breakpoint check or rendered Contact check was completed. Desktop approval
+is owner-provided; mobile/bilingual visual review, keyboard, zoom/reflow, reduced
+motion, long/empty/missing-photo states and offline calendar browser checks remain
+manual QA requirements. No application/preview host or database was started by
+this finalization; no enquiry form was submitted.
+
+Validated local documentation links and `git diff --check`. Staging is restricted
+to the four files above; the external `phase21-preview.cjs` helper and all build
+output are excluded. Commit/push results are reported in the final response;
+the draft PR is neither merged nor moved out of draft. Phase 2.2 is not started.
+
+## 2026-11-13 — Phase 2.1 design system foundations
+
+Verified solution directory, branch `feature/website-redesign`, HEAD `f741032`
+(`feat: redesign homepage with editorial split hero`) and a clean working tree.
+Read the project guidance, README, architecture, design, roadmap and log; audited
+public CSS, shared layout, homepage, room-card partial, public form/button usage,
+calendar styling and the separate admin layout.
+
+Extracted existing public/Hero colors, font stacks, type sizes/line heights,
+frequent spacing, section spacing, container widths, radii, card shadows and
+button measurements into `site.css` tokens. Kept the legacy public palette and
+approved Hero palette distinct. Preserved selectors, declaration/cascade order,
+responsive boundaries, local inverse border override, all dimensions, contextual
+type rules, interaction states, focus and reduced-motion behavior. Existing
+Bootstrap status tokens, H4–H6, alert and validation styling retain ownership;
+no unused status theme or generic utility framework was added.
+
+Added [Design System Foundations](docs/DESIGN-SYSTEM.md) with audit findings,
+final token values, typography/status ownership, verification limits and Phase
+2.2 header/navigation recommendations. Linked it from the historical design audit.
+Files changed: public `site.css`, `docs/DESIGN-SYSTEM.md`, `DESIGN.md`, this log.
+Razor, translations, image/font assets, admin/calendar CSS, JavaScript, backend,
+entities/schema/migrations and runtime data remain unchanged.
+
+Verification: solution and both standalone harness builds with
+`--no-restore -m:1 -v:minimal` passed with zero warnings/errors. Availability
+**14/14**, GalleryUpload **26/26**, Node interaction checks **14/14** passed
+(**54 total**); harnesses executed with `--no-build --no-restore`. A temporary
+script outside the repository expanded root variables in HEAD/current CSS and
+confirmed that every remaining rule matched after comment/whitespace
+normalization, including media rules and keyframes. This is source equivalence,
+not a browser screenshot comparison. Selected opaque text/background contrast
+pairs passed AA normal-text thresholds; detailed ratios and the existing danger
+text/cream reuse limitation are recorded in the design-system note.
+
+Prepared an isolated static Node Hero fixture with existing bilingual text,
+photos, Bootstrap and baseline/current CSS, without ASP.NET startup. Browser
+navigation failed with `net::ERR_CONNECTION_TIMED_OUT`; the preview host was
+stopped. No rendered comparison or BG/EN checks at 320, 375, 768, 1024, 1440px
+were completed. Keyboard-only, zoom/reflow, reduced-motion rendering, long/empty
+content, missing photos and offline calendar browser checks remain manual review
+items. Existing automated tests cover simulated gallery/calendar interaction.
+Final documentation link validation and `git diff --check` passed.
+
+No real web host/database startup, EF commands, dependencies, commit, push,
+merge, branch change or draft PR modification. Phase 2.2 remains a recommendation
+for manual approval, not started work.
+
 ## 2026-11-13 — Selectively restore the original editorial split hero
 
 Inspected current directory, branch `feature/website-redesign`, Git status/diff, and the original implementation plus both experiment edits recorded in this chat. Selectively reversed only the atmospheric wrapper/gradient and blurred photo bleed, without a Git reset/checkout or discarding other uncommitted work. The experiment entries below remain as historical records and are superseded by this restoration.
