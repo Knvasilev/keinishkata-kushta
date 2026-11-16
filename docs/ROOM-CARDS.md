@@ -1,5 +1,9 @@
 # Phase 2.4 — Room cards and homepage review
 
+The approved [Phase 2.5 implementation](ACCOMMODATION-PHASE25.md) supersedes the
+card grid, motion and homepage inventory limit described below. This document
+retains the approved Phase 2.4 baseline and its historical verification.
+
 Implemented 2026-11-16 on `feature/website-redesign`, baseline `06695f5` with a
 clean working tree. This is presentation work and a source/isolated-data audit.
 The live SQL Server records, upload inventory and actual business prices were not

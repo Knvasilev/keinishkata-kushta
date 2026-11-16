@@ -38,7 +38,6 @@ namespace KeinishkataKushta.Controllers
 
             var rooms = await publishedRooms
                 .OrderBy(r => r.PricePerNight)
-                .Take(3)
                 .Select(r => new RoomCardViewModel
                 {
                     Id = r.Id,

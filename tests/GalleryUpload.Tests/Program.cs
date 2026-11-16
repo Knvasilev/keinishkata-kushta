@@ -16,6 +16,29 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 var tests = new (string Name, Func<Task> Run)[]
 {
+    ("All nine amenity titles including seasonal pool resolve in Bulgarian and English", () =>
+    {
+        var expected = new (string Key, string Bg, string En)[]
+        {
+            ("UnderfloorHeating", "Подово отопление", "Underfloor heating"),
+            ("AirConditioning", "Климатици", "Air conditioning"),
+            ("Wifi", "Wi-Fi", "Wi-Fi"),
+            ("Television", "Телевизия", "Television"),
+            ("KitchenTavern", "Кухня и механа", "Kitchen and traditional tavern"),
+            ("GuestParking", "Паркинг", "Guest parking"),
+            ("SeasonalPool", "Сезонен басейн", "Seasonal swimming pool"),
+            ("BbqOven", "Барбекю зона с пещ", "BBQ area with traditional oven"),
+            ("ApartmentTerraces", "Тераси с гледка", "Terraces with views")
+        };
+        foreach (var lang in new[] { "bg", "en" })
+        {
+            var context = new DefaultHttpContext();
+            context.Request.QueryString = new QueryString($"?lang={lang}");
+            foreach (var text in expected)
+                Check(KeinishkataKushta.Infrastructure.SiteText.T(context, text.Key) == (lang == "bg" ? text.Bg : text.En));
+        }
+        return Task.CompletedTask;
+    }),
     ("Room-photo fallback checks the associated file without crossing room directories", async () =>
     {
         await using var fixture = await Fixture.Create();
@@ -47,6 +70,43 @@ var tests = new (string Name, Func<Task> Run)[]
         await fixture.Db.SaveChangesAsync();
         model = (KeinishkataKushta.Models.HomeIndexViewModel)((ViewResult)await controller.Index()).Model!;
         Check(model.TotalRooms == 0 && model.MaxRoomCapacity == 0 && model.StartingPricePerNight == 0 && model.FeaturedRooms.Count == 0);
+    }),
+    ("Homepage includes growing published inventory and preserves current slug/photo associations in both languages", async () =>
+    {
+        await using var fixture = await Fixture.Create();
+        var room = (await fixture.Db.Rooms.FindAsync(1))!;
+        var oldSlug = room.Slug;
+        room.Slug = "owner-renamed-room";
+        var photos = await fixture.SeedImages(1);
+        photos[0].IsCover = false;
+        await fixture.Db.SaveChangesAsync();
+        photos[1].IsCover = true;
+        foreach (var id in Enumerable.Range(3, 3))
+            fixture.Db.Rooms.Add(new Room { Id = id, Name = $"Стая {id}", NameEn = $"Room {id}",
+                Slug = $"current-room-{id}", Description = "Описание", Capacity = 2,
+                PricePerNight = 100 + id, IsPublished = true });
+        fixture.Db.Rooms.Add(new Room { Id = 6, Name = "Hidden", Slug = "hidden-room",
+            Description = "Hidden", Capacity = 2, PricePerNight = 1, IsPublished = false });
+        await fixture.Db.SaveChangesAsync();
+        foreach (var lang in new[] { "bg", "en" })
+        {
+            var home = fixture.InLanguage(new KeinishkataKushta.Controllers.HomeController(
+                fixture.Db, NullLogger<KeinishkataKushta.Controllers.HomeController>.Instance), lang);
+            var model = (KeinishkataKushta.Models.HomeIndexViewModel)((ViewResult)await home.Index()).Model!;
+            Check(model.FeaturedRooms.Count == 5 && model.TotalRooms == 5);
+            Check(model.FeaturedRooms.All(card => card.Id != 6));
+            var card = model.FeaturedRooms.Single(card => card.Id == 1);
+            Check(card.Slug == room.Slug && card.CoverFileName == photos[1].FileName);
+            var controller = fixture.InLanguage(new KeinishkataKushta.Controllers.RoomsController(fixture.Db), lang);
+            Check(model.TotalRooms == model.FeaturedRooms.Count);
+            foreach (var publishedCard in model.FeaturedRooms)
+            {
+                var detail = (KeinishkataKushta.Models.RoomDetailsViewModel)((ViewResult)await controller.Details(publishedCard.Slug)).Model!;
+                Check(detail.Id == publishedCard.Id && detail.Slug == publishedCard.Slug);
+            }
+            Check(await controller.Details(oldSlug) is NotFoundResult);
+            Check(await controller.Details("hidden-room") is NotFoundResult);
+        }
     }),
     ("English room names and descriptions appear on the homepage, list, and details", async () =>
     {

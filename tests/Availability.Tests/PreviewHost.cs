@@ -40,7 +40,7 @@ internal static class PreviewHost
                 && !context.RouteData.Values.ContainsKey("area") && HttpMethods.IsGet(context.HttpContext.Request.Method))
             {
                 var english = SiteText.Lang(context.HttpContext) == "en";
-                var rooms = Enumerable.Range(1, 3).Select(id => new RoomCardViewModel
+                var rooms = Enumerable.Range(1, 4).Select(id => new RoomCardViewModel
                 {
                     Id = id, Slug = $"preview-room-{id}", Capacity = id + 1, PricePerNight = 50 + id * 10,
                     Name = english ? $"Preview room {id} with a long descriptive name" : $"Примерна стая {id} с дълго описателно име",
@@ -55,8 +55,8 @@ internal static class PreviewHost
                     Model = new HomeIndexViewModel
                     {
                         FeaturedRooms = context.HttpContext.Request.Query.ContainsKey("empty") ? new() : rooms,
-                        TotalRooms = context.HttpContext.Request.Query.ContainsKey("empty") ? 0 : 3,
-                        MaxRoomCapacity = 4, StartingPricePerNight = 60
+                        TotalRooms = context.HttpContext.Request.Query.ContainsKey("empty") ? 0 : 4,
+                        MaxRoomCapacity = 5, StartingPricePerNight = 60
                     }
                 };
                 context.HttpContext.Response.Headers.CacheControl = "no-store";

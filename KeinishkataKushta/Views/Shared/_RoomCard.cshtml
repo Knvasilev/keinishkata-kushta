@@ -26,6 +26,10 @@
             </span>
         </div>
         <p>@Model.Description</p>
+        @* Owner-confirmed for every room; do not infer other facilities from names/slugs. *@
+        <ul class="room-card-amenities">
+            <li>@SiteText.T(Context, "UnderfloorHeating") <span>· @SiteText.T(Context, "IndividualThermostat")</span></li>
+        </ul>
         <div class="room-card-footer">
             <span>@SiteText.T(Context, "UpTo") @Model.Capacity @SiteText.T(Context, "Guests")</span>
             <a class="btn btn-sm btn-outline-primary"

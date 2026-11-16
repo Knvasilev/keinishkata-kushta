@@ -1,5 +1,151 @@
 # Development log
 
+## 2026-11-16 — Finalize approved Phase 2.5
+
+Owner approved the complete Accommodation Presentation & Amenities phase,
+including the final title-only nine-item grid, and explicitly authorized commit
+`feat: enhance accommodation presentation and amenities` and push to
+`origin/feature/website-redesign`. Verified directory, branch, HEAD `7d2c858`,
+empty index and exactly ten intended Phase 2.5 source/test/documentation files.
+Reviewed the complete implementation diff and new phase note; no unrelated work.
+Updated the phase note and historical room-card link to record final approval.
+
+Preserved authentic photographs, runtime names/slugs and BG/EN business fields,
+database records, prices/capacities and booking logic. No real web/EF startup,
+database connection, upload change or schema/migration. Test records are isolated
+SQLite fixtures. No branch reset/switch or PR mutation; Phase 3 is not started.
+
+Final solution and both harness builds use `--no-restore -m:1 -v:minimal
+-p:BaseOutputPath=bin/Phase25FinalVerification/`: all passed with zero warnings
+and errors. Fresh harness DLLs passed Availability **14/14**, GalleryUpload
+**30/30**; all three Node suites passed **20/20** (**64 total**).
+Documentation links and diff whitespace checked;
+staging is restricted to the ten reviewed files, excluding ignored runtime/build
+content. Commit/push hashes and remote/clean-tree verification are reported after
+execution rather than predicted in this log.
+
+No new browser checks: owner approval covers final desktop/mobile design; the
+earlier detailed BG/EN breakpoint, keyboard/focus, zoom/reflow, reduced-motion,
+long/empty/missing-photo, live current-slug navigation and offline-calendar QA
+remain as recorded in [Phase 2.5](docs/ACCOMMODATION-PHASE25.md). Approval is not a
+claim that each individual check was performed. PR #1 must remain open/draft.
+
+## 2026-11-16 — Phase 2.5 final amenities simplification
+
+Verified directory, `feature/website-redesign`, HEAD `7d2c858` and existing
+uncommitted Phase 2.5 work. Owner approved the expanded nine-item desktop/mobile
+design and requested title-only amenities before final approval. Removed only
+the three description paragraphs, unused translations and `.amenity-item p`
+styling. Centered icons beside titles and removed heading bottom margins, using
+the existing layout and spacing tokens. Nine BG/EN titles, icons, seasonal pool
+heading and 3/2/1 responsive grid remain intact. Updated the localization check
+to cover the retained titles. No room-card design/hover or other sections changed.
+
+Owner confirms terraces for Apartment 1 and Apartment 2. Re-inspected Room and
+RoomCardViewModel: neither represents apartment type or terrace association.
+Left room-card highlights unchanged, with no name/slug inference or hardcoded ID
+mapping. Future badges need an explicit terrace flag/association maintained in
+Admin and projected to cards, under separately authorized data work.
+
+Files changed in this final step: Home/Index.cshtml, wwwroot/css/site.css,
+Infrastructure/SiteText.cs, tests/GalleryUpload.Tests/Program.cs,
+docs/ACCOMMODATION-PHASE25.md and this log. Room data, photos, prices, capacities,
+slugs, controllers, booking, entities/schema/migrations and licensed assets are
+untouched. No startup/EF commands, commit/push/reset/merge or PR #1 changes.
+
+Solution and both harness builds passed with zero warnings/errors using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase25FinalVerification/`.
+Fresh DLLs passed Availability **14/14**, GalleryUpload **30/30**; all three Node
+suites passed **20/20** (**64 total**). Source check confirmed nine items, icons
+and headings with zero description paragraphs. Documentation links and
+`git diff --check` passed. Full final diff reviewed against the Phase 2.4 baseline.
+Browser checks were not repeated after previous preview connection timeouts;
+final title-only alignment/wrapping remains for manual review. Owner approval
+of preceding desktop/mobile visuals does not establish detailed accessibility,
+BG/EN breakpoint or live navigation coverage. Earlier QA requirements remain.
+
+## 2026-11-16 — Phase 2.5 amenities refinement after visual approval
+
+Verified directory, branch `feature/website-redesign`, HEAD `7d2c858` and the
+existing uncommitted Phase 2.5 changes before editing. Owner approved room cards,
+desktop/mobile layout, typography and overall design. Preserved that work and
+the committed Phase 2.4 baseline. No commit/push/reset/merge/PR change.
+
+Expanded only the homepage amenities to nine explicitly owner-confirmed
+facilities: heating, air conditioning, Wi-Fi, television, kitchen/traditional
+tavern, guest parking, seasonal swimming pool, BBQ/traditional oven and terraces.
+Kept descriptions only for heating (individual room temperature control), pool
+(summer season, no specific dates/heating claims), terraces (apartments only).
+Added eight BG/EN SiteText entries and refined the terrace title. No free-use,
+capacity or technical claims. Three columns from 992px, two from 576px, one below;
+existing 28px green icons, ivory surface and compact spacing retained.
+
+Files edited in this refinement: Home/Index.cshtml, Infrastructure/SiteText.cs,
+wwwroot/css/site.css, tests/GalleryUpload.Tests/Program.cs,
+docs/ACCOMMODATION-PHASE25.md and this log. Approved room-card markup, CSS/hover,
+images, remaining sections, controllers, prices/capacities, data/schema/migrations,
+admin and booking behavior were not changed. No room-ID/type inference or amenity
+mapping. New property facilities are not propagated to room cards.
+
+Re-inspected published-room query/count and current-slug resolution. Extended
+isolated regression to assert count/card equality and resolve every fixture
+card's Details URL in both languages, including the renamed slug; hidden/old
+slugs remain 404. Added a focused check for nine BG/EN labels and three qualifiers.
+No business logic adjustment or speculative redirects. Actual live owner-edited
+URLs still require click-through review; no real database was accessed.
+
+Solution and both standalone harness builds passed, zero warnings/errors, with
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase25AmenitiesVerification/`.
+Fresh DLL checks: Availability **14/14**, GalleryUpload **30/30**; all three Node
+suites **20/20** (**64 total**). Final diff/whitespace and local documentation
+links passed. Safe preview reported listening with the existing key-ring access
+warning; in-app browser timed out after startup. Preview stopped, no real web
+startup/EF commands. No rendered BG/EN responsive verification claimed.
+
+Full translations, final amenities and remaining manual checks are in the
+[Phase 2.5 note](docs/ACCOMMODATION-PHASE25.md). Prior detailed QA remains required;
+the expanded amenities grid awaits final owner visual review. Exact pool season,
+facility conditions/specifications/fees and room-specific associations remain
+unspecified and are not promised in UI copy.
+
+## 2026-11-16 — Phase 2.5 experimental accommodation and amenities
+
+Verified solution directory, `feature/website-redesign`, clean working tree and
+HEAD `7d2c858` (approved, committed Phase 2.4 rollback baseline). Read project and
+feature guidance; inspected room entities, view models, published queries,
+current-slug routing, image ownership/cover selection and amenity evidence.
+
+Shared cards now use two columns from 768px, one below, larger 4:3 photographs,
+white content surfaces, subtle shadows and responsive padding. Home displays all
+published rooms instead of truncating at three; no hardcoded inventory count.
+Added 220ms, fine-pointer/no-reduced-motion hover: 4px lift and 1.02 image scale.
+Kept visible keyboard focus, one Details action, capacity, pricing and description
+preview. Added owner-confirmed heating/individual thermostat highlight to cards,
+and a compact bilingual two-facility section before the preserved Your Stay.
+Apartment terraces remain property-level copy because no structured room-type
+mapping exists. Other amenities were not invented to fill a grid.
+
+No room records, IDs, slugs, prices, capacities, uploaded photos/associations,
+entities/schema/migrations, booking calculations, admin, licensed assets or
+dependencies changed. No real app/EF startup, database connection, branch reset,
+commit, push, merge or PR modification. New test data is isolated SQLite only.
+
+Solution and both harness builds passed with zero warnings/errors using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase25Verification/`.
+Fresh DLLs: Availability **14/14**, GalleryUpload **29/29**; all three Node suites
+**20/20** (**63 total**). New regression covers five published rooms, exclusion
+of an unpublished room, renamed-slug resolution and cover identity in BG/EN.
+Safe preview now supplies four synthetic rooms. Final diff/whitespace and local
+documentation links passed.
+
+In-app browser could not reach the safe preview: connection refused before host
+startup, then timeout after it reported listening (with key-ring access warning).
+Host stopped; no rendered screenshot, breakpoint or interaction check claimed.
+See [Phase 2.5](docs/ACCOMMODATION-PHASE25.md) for facilities evidence, complete
+file list, routing limits, missing amenity information and manual visual matrix.
+Actual owner-edited live slugs/crops remain for manual review; old URL redirects
+need an exact owner-supplied mapping and separate scope.
+
 ## 2026-11-16 — Finalize Phase 2.4 after desktop and mobile approval
 
 The owner approved the desktop/mobile design and explicitly authorized commit and
