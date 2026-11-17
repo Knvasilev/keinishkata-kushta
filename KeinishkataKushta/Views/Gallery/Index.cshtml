@@ -10,7 +10,7 @@
     <p class="lead mb-0">@SiteText.T(Context, "GalleryIntro")</p>
 </section>
 
-<section class="container-xxl pb-5">
+<section class="container-xxl pb-5" data-gallery-collection>
     @if (Model.Images.Count == 0)
     {
         <div class="section-band text-center">
@@ -42,32 +42,4 @@
     }
 </section>
 
-@if (Model.Images.Count > 0)
-{
-    <div class="gallery-lightbox"
-         data-gallery-lightbox
-         role="dialog"
-         aria-modal="true"
-         aria-label="@SiteText.T(Context, "GalleryTitle")"
-         hidden>
-        <button class="gallery-lightbox-close"
-                type="button"
-                data-gallery-close
-                aria-label="@SiteText.T(Context, "CloseGallery")">&times;</button>
-        <button class="gallery-lightbox-nav gallery-lightbox-previous"
-                type="button"
-                data-gallery-previous
-                aria-label="@SiteText.T(Context, "PreviousImage")">&#8249;</button>
-        <figure class="gallery-lightbox-stage">
-            <img data-gallery-image src="" alt="" />
-            <figcaption>
-                <span data-gallery-caption></span>
-                <span><span data-gallery-counter></span> / @Model.Images.Count</span>
-            </figcaption>
-        </figure>
-        <button class="gallery-lightbox-nav gallery-lightbox-next"
-                type="button"
-                data-gallery-next
-                aria-label="@SiteText.T(Context, "NextImage")">&#8250;</button>
-    </div>
-}
+<partial name="_GalleryLightbox" model="@(new GalleryLightboxViewModel(SiteText.T(Context, "GalleryTitle"), Model.Images.Count))" />

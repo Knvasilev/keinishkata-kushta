@@ -1045,17 +1045,20 @@ a {
 
 .room-details-heading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: var(--kk-space-10);
-  padding: 96px 12px 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  align-items: center;
+  gap: var(--kk-space-8);
+  padding: var(--kk-section-space-mobile) 12px var(--kk-space-8);
 }
 
 .room-details-heading h1 {
-  font-size: 3.6rem;
+  margin-bottom: var(--kk-space-6);
+  font-size: var(--kk-type-display);
+  overflow-wrap: anywhere;
 }
 
 .room-details-meta {
-  align-self: end;
+  min-width: 0;
   padding: var(--kk-space-6);
   background: var(--kk-cream);
   border: 1px solid var(--kk-border);
@@ -1076,23 +1079,68 @@ a {
 }
 
 .room-cover-frame {
-  max-height: 580px;
+  width: 100%;
 }
 
 .room-detail-cover {
-  max-height: 580px;
+  max-height: 520px;
   aspect-ratio: 16 / 9;
 }
 
 .room-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  gap: 14px;
-  margin-top: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--kk-space-3);
 }
 
 .room-gallery img {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
+}
+
+.room-gallery [hidden] {
+  display: none;
+}
+
+.room-details-actions,
+.room-photos-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kk-space-3);
+}
+
+.room-details-actions .btn,
+.room-photos-toolbar .btn {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.room-photos-toolbar {
+  justify-content: space-between;
+  margin: var(--kk-space-5) 0;
+}
+
+.room-photos-toolbar h2 {
+  margin: 0;
+  font-size: var(--kk-type-h3);
+}
+
+.room-description {
+  padding-top: var(--kk-space-10);
+  overflow-wrap: anywhere;
+}
+
+.room-description-copy {
+  max-width: 70ch;
+  white-space: pre-line;
+}
+
+.room-heating-note {
+  max-width: 70ch;
+  padding-top: var(--kk-space-4);
+  border-top: 1px solid var(--kk-border);
 }
 
 .property-gallery-grid {
@@ -1132,85 +1180,91 @@ body.gallery-open {
   overflow: hidden;
 }
 
-.gallery-lightbox[hidden] {
+/* One modal layout for room and property collections. Closed dialogs stay out of layout. */
+.gallery-lightbox:not([open]) {
   display: none;
 }
 
 .gallery-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: var(--kk-space-5);
+  border: 0;
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) 72px;
-  gap: var(--kk-space-5);
-  align-items: center;
-  padding: var(--kk-space-7);
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  grid-template-rows: 52px minmax(0, 1fr);
+  gap: var(--kk-space-4);
+  overflow: hidden;
   color: var(--kk-on-brand);
+  background: rgba(5, 7, 4, .98);
+}
+
+.gallery-lightbox::backdrop {
   background: rgba(5, 7, 4, .96);
 }
 
+.gallery-lightbox-counter {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  align-self: center;
+  font-variant-numeric: tabular-nums;
+}
+
 .gallery-lightbox-stage {
-  width: 100%;
-  max-width: var(--kk-container);
-  margin: 0 auto;
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--kk-space-3);
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+.gallery-lightbox-media {
+  min-width: 0;
+  min-height: 0;
+  touch-action: pan-y pinch-zoom;
 }
 
 .gallery-lightbox-stage img {
   display: block;
   width: 100%;
-  max-height: calc(100vh - 120px);
-  object-fit: contain;
-  touch-action: pan-y pinch-zoom;
-  user-select: none;
-}
-
-.gallery-lightbox.gallery-lightbox-interactive {
-  grid-template-columns: minmax(0, 1fr);
-  padding-top: 84px;
-}
-
-.gallery-photo-button {
-  display: block;
-  width: 100%;
-  height: min(72vh, calc(100vh - 160px), 800px);
-  height: min(72svh, calc(100svh - 160px), 800px);
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  touch-action: pan-y pinch-zoom;
-}
-
-.gallery-photo-button img {
   height: 100%;
-}
-
-.gallery-photo-button:focus-visible {
-  outline: 2px solid var(--kk-gold);
-  outline-offset: 4px;
-}
-
-.gallery-photo-button:disabled {
-  cursor: default;
-}
-
-.gallery-lightbox-nav[hidden] {
-  display: none;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .gallery-lightbox-stage figcaption {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--kk-space-6);
-  padding-top: 14px;
-  color: rgba(255, 255, 255, .82);
+  max-height: 20vh;
+  max-height: 20dvh;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  padding: var(--kk-space-1);
+  color: rgba(255, 255, 255, .9);
   font-size: .9rem;
+  text-align: center;
+}
+
+.gallery-lightbox-stage figcaption[hidden],
+.gallery-lightbox-nav[hidden] {
+  display: none;
 }
 
 .gallery-lightbox-close,
 .gallery-lightbox-nav {
   display: grid;
   place-items: center;
+  align-self: center;
   width: 52px;
   height: 52px;
   padding: 0;
@@ -1218,39 +1272,42 @@ body.gallery-open {
   background: rgba(255, 255, 255, .1);
   border: 1px solid rgba(255, 255, 255, .35);
   border-radius: var(--kk-radius-pill);
+  cursor: pointer;
 }
 
 .gallery-lightbox-close:hover,
-.gallery-lightbox-close:focus-visible,
-.gallery-lightbox-nav:hover,
-.gallery-lightbox-nav:focus-visible {
+.gallery-lightbox-nav:hover {
   color: var(--kk-green);
   background: var(--kk-gold);
   border-color: var(--kk-gold);
-  outline: 0;
+}
+
+.gallery-lightbox button:focus-visible,
+.gallery-lightbox figcaption:focus-visible {
+  outline: 3px solid var(--kk-gold);
+  outline-offset: 3px;
 }
 
 .gallery-lightbox-close {
-  position: absolute;
-  top: 22px;
-  right: 22px;
-  z-index: 1;
+  grid-column: 3;
+  grid-row: 1;
   font-size: 2rem;
   line-height: 1;
 }
 
 .gallery-lightbox-nav {
+  grid-row: 2;
   font-family: Georgia, serif;
   font-size: 2.5rem;
   line-height: 1;
 }
 
 .gallery-lightbox-previous {
-  justify-self: end;
+  grid-column: 1;
 }
 
 .gallery-lightbox-next {
-  justify-self: start;
+  grid-column: 3;
 }
 
 .section-band {
@@ -1642,6 +1699,25 @@ textarea.form-control {
 }
 
 @media (max-width: 767.98px) {
+  .room-gallery {
+    display: flex;
+    overflow-x: auto;
+    padding: var(--kk-space-1);
+    scroll-padding: var(--kk-space-1);
+  }
+
+  .room-gallery > button {
+    flex: 0 0 112px;
+  }
+
+  .room-detail-cover {
+    aspect-ratio: 4 / 3;
+  }
+
+  .room-details-actions .btn {
+    flex: 1 1 220px;
+  }
+
   .navbar-brand {
     font-size: 1.5rem;
   }
@@ -1711,9 +1787,10 @@ textarea.form-control {
   }
 
   .gallery-lightbox {
-    grid-template-columns: 48px minmax(0, 1fr) 48px;
-    gap: var(--kk-space-2);
-    padding: 20px 8px;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    grid-template-rows: 44px minmax(0, 1fr) 44px;
+    gap: var(--kk-space-3);
+    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
   }
 
   .gallery-lightbox-close,
@@ -1722,18 +1799,12 @@ textarea.form-control {
     height: 44px;
   }
 
-  .gallery-lightbox-close {
-    top: 12px;
-    right: 12px;
+  .gallery-lightbox-stage {
+    grid-column: 1 / -1;
   }
 
-  .gallery-lightbox-stage img {
-    max-height: calc(100vh - 108px);
-  }
-
-  .gallery-lightbox-stage figcaption {
-    gap: var(--kk-space-3);
-    padding: 10px 4px 0;
+  .gallery-lightbox-nav {
+    grid-row: 3;
   }
 
   .section-block {

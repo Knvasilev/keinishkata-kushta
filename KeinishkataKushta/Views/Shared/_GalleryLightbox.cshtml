@@ -1,0 +1,22 @@
+@model GalleryLightboxViewModel
+
+@if (Model.Count > 0)
+{
+    <dialog class="gallery-lightbox" data-gallery-lightbox aria-label="@Model.Title">
+        <span class="gallery-lightbox-counter" aria-live="polite" aria-atomic="true">
+            <span data-gallery-counter></span> / @Model.Count
+        </span>
+        <button class="gallery-lightbox-close" type="button" data-gallery-close
+                aria-label="@SiteText.T(Context, "CloseGallery")" autofocus><span aria-hidden="true">&times;</span></button>
+        <button class="gallery-lightbox-nav gallery-lightbox-previous" type="button" data-gallery-previous
+                aria-label="@SiteText.T(Context, "PreviousImage")"><span aria-hidden="true">&#8249;</span></button>
+        <figure class="gallery-lightbox-stage">
+            <div class="gallery-lightbox-media" data-gallery-swipe>
+                <img data-gallery-image alt="" draggable="false" decoding="async" />
+            </div>
+            <figcaption data-gallery-caption tabindex="0" hidden></figcaption>
+        </figure>
+        <button class="gallery-lightbox-nav gallery-lightbox-next" type="button" data-gallery-next
+                aria-label="@SiteText.T(Context, "NextImage")"><span aria-hidden="true">&#8250;</span></button>
+    </dialog>
+}

@@ -8,6 +8,12 @@ namespace KeinishkataKushta.Infrastructure
 
         private static readonly Dictionary<string, (string Bg, string En)> Texts = new()
         {
+            ["RoomCheckDates"] = ("Проверете свободните дати", "Check available dates"),
+            ["RoomPhotos"] = ("Снимки на стаята", "Room photos"),
+            ["RoomViewAllPhotos"] = ("Вижте всички снимки", "View all photos"),
+            ["RoomPhotosEmpty"] = ("Скоро ще добавим снимки на тази стая.", "Photos of this room are coming soon."),
+            ["RoomAbout"] = ("За стаята", "About the room"),
+            ["RoomUnderfloorHeating"] = ("Подово отопление с индивидуално управление в стаята.", "Individually controlled underfloor heating in the room."),
             ["SocialProfiles"] = ("Социални мрежи", "Social media"),
             ["OpensNewTab"] = ("отваря се в нов раздел", "opens in a new tab"),
             ["Availability"] = ("Свободни дати", "Availability"),

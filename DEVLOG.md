@@ -1,5 +1,109 @@
 # Development log
 
+## 2026-11-17 — Finalize approved unified lightbox experience
+
+Owner approved the Gallery and Room Details lightboxes on desktop/mobile,
+including layout, controls and swipe, and authorized the requested commit/push.
+Verified `feature/website-redesign`, HEAD `0456290`, empty initial index and the
+12 expected Phase 3.1/3.2 source, test and documentation files. Reviewed the full
+diff and new files; no unexpected or unrelated changes. The integrated Room
+Details presentation, localized labels and its phase note accompany the shared
+lightbox. Updated phase notes to record approval; implementation is unchanged.
+
+Final solution and both harness builds passed with zero warnings/errors using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase32FinalVerification/`.
+Fresh DLLs passed Availability **14/14** and GalleryUpload **30/30**; all three
+Node suites passed **27/27** (**71 checks total**). Coverage confirms collection
+isolation/order, BG/EN fallback, slugs/photo associations, keyboard/focus, swipe
+and deliberate no-click advancement. Documentation links and staged whitespace
+checks passed. Staging is restricted to the 12 reviewed files; ignored build
+output is excluded.
+
+Read-only GitHub API confirmed PR #1 is open/draft; no PR mutation is authorized.
+`gh` is unavailable, and the API needed an approved retry after sandbox DNS failed.
+No new browser checks were run: desktop/mobile acceptance is owner-provided;
+earlier fixture evidence remains in the phase notes. Screen-reader, real zoom/
+reflow, broader browser compatibility and slow/broken-image QA remain outstanding.
+No real web/preview host, database/EF commands, pricing/data/upload/image changes
+or dependencies. Commit/push hashes and final clean-tree/remote state are reported
+after execution, not predicted here. No merge, branch switch/reset or review-status
+change is performed.
+
+## 2026-11-16 — Phase 3.2 unified gallery and lightbox
+
+Verified directory, `feature/website-redesign`, HEAD `0456290` and the existing
+uncommitted Phase 3.1 work; preserved it. Audited both views, shared JS/CSS, models,
+controllers, translations and regressions. Replaced duplicate dialogs with one
+`_GalleryLightbox` partial and title/count model. Unified circular controls and
+counter, full-image `contain` sizing, mobile bottom arrows and bounded captions.
+Removed image click-to-advance and animations. Retained cyclic arrows/swipes,
+BG/EN descriptions/order, scoped collection ownership, and existing page layouts.
+Native modality provides background inertness; explicit focus handling covers
+initial focus, Tab wrapping, Escape/native cancel, cleanup and return to opener.
+
+Solution and both harness builds passed with zero warnings/errors using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase32Verification/`.
+Fresh DLLs: Availability **14/14**, GalleryUpload **30/30**. Node suites **27/27**
+(**71 total**). Tests cover unified counts/order/isolation, no image-click advance,
+gestures/cancellation/multi-touch, focus, optional captions and cleanup.
+
+Extended the isolated preview to property Gallery and portrait/panorama fixtures.
+In-app browser checked both pages in BG/EN at eight widths (32 modal layout cases),
+zero/one/two/nine photos, first/last wrapping, pointer drags, image-click behavior,
+keyboard/focus and selected desktop/mobile/short-landscape screenshots. One 375px
+fractional edge reading was within 1px with no scrolling overflow. Physical phone
+touch, real zoom/reflow, assistive technology, authentic upload rendering and
+cross-browser behavior remain manual QA. Evidence, files and limitations:
+[Phase 3.2](docs/GALLERY-LIGHTBOX-PHASE32.md).
+
+Preview required an approved sandbox retry after data-protection access errors;
+stopped it and cleaned up browser state. No real application/database startup,
+EF command, data/schema/migration, upload/image change, dependency change, commit,
+push, branch switch/reset, merge or PR #1 modification. Documentation links and
+`git diff --check` passed. Changes remain uncommitted for visual approval.
+
+## 2026-11-16 — Phase 3.1 room details experience
+
+Verified solution directory, branch `feature/website-redesign`, clean working
+tree and approved Phase 2.5 HEAD `0456290`. Audited documentation, room/controller
+and gallery models, detail/property views, translations, static image serving,
+shared JS/CSS and tests before editing.
+
+Moved both availability/contact actions before photography, retained capacity,
+owner-managed price formatting and the closing CTA. Bounded the lead photograph,
+limited visible additional previews to four, added a localized collection opener,
+and kept all saved-order lightbox items without loading hidden image elements.
+Phone previews scroll within their own horizontal strip. The complete description
+appears once below the photos with an owner-confirmed heating note. Added visible
+room-lightbox previous/next controls through existing handlers, localized empty
+state, and room-scoped caption/overflow containment. No apartment identity is
+inferred from mutable names/slugs. Generic Contact still receives no room context.
+
+Solution and both harness builds passed with zero warnings/errors using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase31Verification/`.
+Fresh harness DLLs: Availability **14/14**, GalleryUpload **30/30**. All three
+Node suites: **22/22**, including two new collection-navigation regressions
+(**66 checks total**). Extended the isolated Razor fixture for zero/one/many,
+long-text and missing-photo room states without database/controller execution.
+
+In-app browser measured BG/EN layout at all requested widths (320, 375, 390, 480,
+768, 1024, 1200, 1440px): no horizontal page overflow, five visible photo items,
+local mobile-strip scrolling and bounded desktop lead height. Additional zero,
+one, long and missing-file states passed containment checks at 320/1440px in both
+languages. Inspected selected 320/1440px screenshots; verified collection wrap,
+Escape/focus restoration, single-photo controls and dialog Tab trapping.
+Evidence uses generated fixture graphics, not authentic upload crops; actual
+touch, zoom, reduced-motion rendering and full site regression remain manual QA.
+Details, changed files, preview command and Phase 3.2 shared-lightbox review items
+are recorded in [Phase 3.1](docs/ROOM-DETAILS-PHASE31.md).
+
+The initial preview hit sandbox access errors and a relative-content-root issue;
+stopped it and used an approved absolute-root retry. Preview and temporary browser
+state were cleaned up. No real application startup, SQL Server connection, EF
+command, data/schema/migration, upload/image modification, dependencies, commit,
+push, branch change, merge or PR #1 update. Implementation remains uncommitted
+for manual visual approval.
+
 ## 2026-11-16 — Finalize approved Phase 2.5
 
 Owner approved the complete Accommodation Presentation & Amenities phase,

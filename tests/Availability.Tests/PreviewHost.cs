@@ -24,6 +24,17 @@ internal static class PreviewHost
         builder.Services.AddControllersWithViews(options => options.Filters.Add<FixtureFilter>());
         var app = builder.Build();
         app.UseStaticFiles();
+        // Generated preview graphics only; never read or create runtime uploads.
+        static IResult FixtureImage(string fileName)
+        {
+            if (!fileName.StartsWith("fixture-", StringComparison.Ordinal) || !fileName.EndsWith(".svg", StringComparison.Ordinal))
+                return Results.NotFound();
+            var width = fileName.Contains("-2.") ? 600 : 1200;
+            var height = fileName.Contains("-3.") ? 400 : 800;
+            return Results.Content($"<svg xmlns='http://www.w3.org/2000/svg' width='{width}' height='{height}' viewBox='0 0 {width} {height}'><rect width='100%' height='100%' fill='#295333'/><rect x='8' y='8' width='{width - 16}' height='{height - 16}' fill='none' stroke='#b69150' stroke-width='16'/><text x='50%' y='50%' text-anchor='middle' font-size='40' fill='white'>Preview {width} x {height}</text></svg>", "image/svg+xml");
+        }
+        app.MapGet("/uploads/rooms/0/{fileName}", FixtureImage);
+        app.MapGet("/uploads/property/{fileName}", FixtureImage);
         app.MapControllerRoute("areas", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
         app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
         await app.RunAsync();
@@ -34,6 +45,62 @@ internal static class PreviewHost
         public int Order => int.MinValue;
         public Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
+            if (context.RouteData.Values["controller"]?.ToString() == "Gallery"
+                && context.RouteData.Values["action"]?.ToString() == "Index"
+                && !context.RouteData.Values.ContainsKey("area") && HttpMethods.IsGet(context.HttpContext.Request.Method))
+            {
+                var english = SiteText.Lang(context.HttpContext) == "en";
+                var query = context.HttpContext.Request.Query;
+                var count = int.TryParse(query["photos"], out var requestedCount) ? Math.Clamp(requestedCount, 0, 30) : 9;
+                var caption = english ? "House and grounds preview" : "Преглед на къщата и двора";
+                if (query.ContainsKey("long")) caption = string.Join(" ", Enumerable.Repeat(caption, 60));
+                var galleryData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<PropertyGalleryViewModel>(
+                    new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), context.ModelState)
+                {
+                    Model = new PropertyGalleryViewModel
+                    {
+                        Images = Enumerable.Range(1, count).Select(index => new PropertyGalleryImageViewModel
+                        {
+                            FileName = $"fixture-{index}.svg", Caption = $"{caption} — {index}"
+                        }).ToList()
+                    }
+                };
+                context.HttpContext.Response.Headers.CacheControl = "no-store";
+                context.Result = new ViewResult { ViewName = "/Views/Gallery/Index.cshtml", ViewData = galleryData };
+                return Task.CompletedTask;
+            }
+            if (context.RouteData.Values["controller"]?.ToString() == "Rooms"
+                && context.RouteData.Values["action"]?.ToString() == "Details"
+                && !context.RouteData.Values.ContainsKey("area") && HttpMethods.IsGet(context.HttpContext.Request.Method))
+            {
+                var english = SiteText.Lang(context.HttpContext) == "en";
+                var query = context.HttpContext.Request.Query;
+                var count = int.TryParse(query["photos"], out var requestedCount) ? Math.Clamp(requestedCount, 0, 30) : 9;
+                var name = english ? "Preview room" : "Примерна стая";
+                var description = english ? "Sample room description for layout review.\nA second paragraph with room information."
+                    : "Примерно описание на стая за преглед на оформлението.\nВтори абзац с информация за стаята.";
+                if (query.ContainsKey("long"))
+                {
+                    name = string.Join(" ", Enumerable.Repeat(name, 6));
+                    description = string.Join("\n\n", Enumerable.Repeat(description, 12));
+                }
+                var roomData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<RoomDetailsViewModel>(
+                    new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), context.ModelState)
+                {
+                    Model = new RoomDetailsViewModel
+                    {
+                        Id = 0, Slug = "preview-room", Name = name, Description = description, Capacity = 4, PricePerNight = 60,
+                        Images = Enumerable.Range(1, count).Select(index => new RoomImageViewModel
+                        {
+                            FileName = query.ContainsKey("missing") ? "missing-preview-photo.jpg" : $"fixture-{index}.svg",
+                            Caption = $"{name} — {index}", IsCover = index == 3
+                        }).ToList()
+                    }
+                };
+                context.HttpContext.Response.Headers.CacheControl = "no-store";
+                context.Result = new ViewResult { ViewName = "/Views/Rooms/Details.cshtml", ViewData = roomData };
+                return Task.CompletedTask;
+            }
             // Synthetic homepage data; never instantiate a controller or query storage.
             if (context.RouteData.Values["controller"]?.ToString() == "Home"
                 && context.RouteData.Values["action"]?.ToString() == "Index"
