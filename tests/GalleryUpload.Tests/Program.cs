@@ -16,6 +16,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 var tests = new (string Name, Func<Task> Run)[]
 {
+    ("Bulk captions save both languages and preserve public fallback, files, ordering and covers", CaptionBatchChecks.MultipleAndPublic),
+    ("Bulk captions preserve untouched concurrent values and roll back stale batches", CaptionBatchChecks.SelectiveAndStale),
+    ("Bulk captions validate all rows, retain drafts, reject foreign IDs and support subsets and clearing", CaptionBatchChecks.ValidationAndScope),
     ("All nine amenity titles including seasonal pool resolve in Bulgarian and English", () =>
     {
         var expected = new (string Key, string Bg, string En)[]

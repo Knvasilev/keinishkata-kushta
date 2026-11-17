@@ -45,6 +45,33 @@ internal static class PreviewHost
         public int Order => int.MinValue;
         public Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
         {
+            if (!context.RouteData.Values.ContainsKey("area")
+                && context.RouteData.Values["controller"]?.ToString() == "Gallery"
+                && HttpMethods.IsGet(context.HttpContext.Request.Method)
+                && context.RouteData.Values["action"]?.ToString() == "Index"
+                && context.HttpContext.Request.Query.ContainsKey("admin-editor"))
+            {
+                var roomGallery = context.HttpContext.Request.Query["admin-editor"] == "room";
+                var count = int.TryParse(context.HttpContext.Request.Query["photos"], out var adminPhotoCount) ? Math.Clamp(adminPhotoCount, 0, 30) : 9;
+                var images = Enumerable.Range(1, count).Select(index => new KeinishkataKushta.Web.Areas.Admin.Models.GalleryImageListItemViewModel
+                {
+                    Id = index, FileName = $"fixture-{index}.svg", Caption = $"Примерна снимка {index}",
+                    CaptionEn = index % 2 == 0 ? $"Sample photo {index}" : null, IsCover = roomGallery && index == 1
+                }).ToList();
+                var data = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(
+                    new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), context.ModelState);
+                data.Model = roomGallery
+                    ? new KeinishkataKushta.Web.Areas.Admin.Models.GalleryIndexViewModel { RoomId = 0, RoomName = "Preview / Преглед", Images = images }
+                    : new KeinishkataKushta.Web.Areas.Admin.Models.PropertyGalleryIndexViewModel { Images = images };
+                // Match Admin ambient routing for partial lookup and form/link generation.
+                context.RouteData.Values["area"] = "Admin";
+                context.RouteData.Values["action"] = roomGallery ? "Index" : "Property";
+                context.Result = new ViewResult
+                {
+                    ViewName = $"/Areas/Admin/Views/Gallery/{(roomGallery ? "Index" : "Property")}.cshtml", ViewData = data
+                };
+                return Task.CompletedTask;
+            }
             if (context.RouteData.Values["controller"]?.ToString() == "Gallery"
                 && context.RouteData.Values["action"]?.ToString() == "Index"
                 && !context.RouteData.Values.ContainsKey("area") && HttpMethods.IsGet(context.HttpContext.Request.Method))

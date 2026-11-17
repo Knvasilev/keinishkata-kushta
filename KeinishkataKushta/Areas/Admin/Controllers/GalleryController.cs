@@ -286,6 +286,74 @@ namespace KeinishkataKushta.Web.Areas.Admin.Controllers
 
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCaptions(GalleryCaptionBatchViewModel model)
+        {
+            if (model.Rows == null || model.Rows.Count == 0 ||
+                model.Rows.Select(row => row.Id).Distinct().Count() != model.Rows.Count)
+                return BadRequest();
+
+            var ids = model.Rows.Select(row => row.Id).ToList();
+            var validIds = await _db.GalleryImages.AsNoTracking()
+                .Where(image => image.RoomId == model.RoomId && ids.Contains(image.Id))
+                .Select(image => image.Id).ToListAsync();
+            if (validIds.Count != ids.Count) return BadRequest();
+
+            foreach (var row in model.Rows)
+                if (new[] { row.Caption, row.CaptionEn, row.OriginalCaption, row.OriginalCaptionEn }
+                    .Any(value => value?.Length > 500))
+                    ModelState.AddModelError("", $"Photo {row.Id}: each caption must be no more than 500 characters.");
+            if (!ModelState.IsValid) return await CaptionErrors(model);
+
+            var changedPhotos = 0;
+            await using (var transaction = await _db.Database.BeginTransactionAsync())
+            {
+                foreach (var row in model.Rows)
+                {
+                    var changed = false;
+                    foreach (var english in new[] { false, true })
+                    {
+                        var original = english ? row.OriginalCaptionEn : row.OriginalCaption;
+                        var value = CleanCaption(english ? row.CaptionEn : row.Caption);
+                        if (value == CleanCaption(original)) continue;
+                        var query = _db.GalleryImages.Where(image => image.Id == row.Id && image.RoomId == model.RoomId);
+                        // Compare the edited field only, preserving unrelated concurrent edits.
+                        var affected = english
+                            ? await query.Where(image => image.CaptionEn == original ||
+                                (original == null && image.CaptionEn == ""))
+                                .ExecuteUpdateAsync(setters => setters.SetProperty(image => image.CaptionEn, value))
+                            : await query.Where(image => image.Caption == original ||
+                                (original == null && image.Caption == ""))
+                                .ExecuteUpdateAsync(setters => setters.SetProperty(image => image.Caption, value));
+                        if (affected != 1)
+                        {
+                            await transaction.RollbackAsync();
+                            ModelState.AddModelError("", $"Photo {row.Id} changed in another session. Nothing was saved. Keep a copy of your edits, reload the gallery, and try again.");
+                            return await CaptionErrors(model);
+                        }
+                        changed = true;
+                    }
+                    if (changed) changedPhotos++;
+                }
+                await transaction.CommitAsync();
+            }
+            TempData["Ok"] = changedPhotos == 0 ? "No caption changes to save." : $"Captions saved for {changedPhotos} photo(s).";
+            return model.RoomId.HasValue
+                ? RedirectToAction(nameof(Index), new { roomId = model.RoomId })
+                : RedirectToAction(nameof(Property));
+        }
+
+        private static string? CleanCaption(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+        private async Task<IActionResult> CaptionErrors(GalleryCaptionBatchViewModel model)
+        {
+            ViewData["CaptionDraft"] = model;
+            var result = model.RoomId.HasValue ? await Index(model.RoomId.Value) : await Property();
+            if (result is ViewResult view) view.ViewName = model.RoomId.HasValue ? "Index" : "Property";
+            return result;
+        }
+
         // POST: /Admin/Gallery/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]

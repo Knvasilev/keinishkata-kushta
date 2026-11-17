@@ -14,8 +14,9 @@ so a missing description translation does not hide an English room name.
 
 1. Open Admin > Rooms > Edit. Fill in Name (English) and Description (English),
    then Save. The original fields retain their Bulgarian/default text.
-2. Open a room's gallery or House & Grounds. Under an existing photo, fill in
-   Caption (English) and click Save captions. Both captions can be edited there.
+2. Open a room's gallery or House & Grounds. Edit captions under any number of
+   existing photos, then choose **Save all changes** once. Both languages are
+   independently editable; clearing English restores the public Bulgarian fallback.
 3. For new uploads, both caption fields apply to all photos in the selected batch.
 4. Switch to EN on the public site and check the room cards, details, and galleries.
 
@@ -23,6 +24,21 @@ For example, `Механа & Кухня` can have the English caption `Tavern & 
 Photo files do not need to be uploaded again. Caption editing preserves file
 names, cover choices, room associations, and photo ordering. Room translation
 editing preserves the existing slug and its URL.
+
+With JavaScript enabled, select photos and choose a language and shared caption,
+then **Apply to selected photos**. This fills empty fields by default. To replace
+nonempty captions, explicitly check **Replace existing nonempty captions in this
+language** before applying; that permission resets after each application or
+language change. Applying only edits the fields. Review or adjust each photo,
+then choose **Save all changes** to persist the batch. Empty shared text cannot
+clear a selection accidentally; clear individual fields when needed.
+
+Bulk saving works without JavaScript. Validation errors retain the draft and save
+nothing. If another session changed an edited field, the whole batch rolls back;
+copy your draft before reloading and reconciling the newer captions. Unchanged
+fields preserve newer values. Save before uploading, moving, deleting, or changing
+a cover; these remain separate actions. JavaScript warns before leaving unsaved
+caption edits. No additional migration or dependency is required for this editor.
 
 ## Database Update
 

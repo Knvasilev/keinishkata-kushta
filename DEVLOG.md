@@ -1,5 +1,106 @@
 # Development log
 
+## 2026-11-17 — Finalize approved Phase 3.3
+
+Owner approved bulk bilingual gallery caption management and explicitly authorized
+one commit and push. The owner reported all five manual acceptance checks passed:
+individual English caption saving; persistence after Admin refresh; applying to
+multiple selected photos with explicit existing-value replacement; updated English
+captions in the public Gallery; and preservation of Bulgarian captions when
+switching languages. These are owner-performed checks, not automated test claims.
+
+Verified solution directory, branch `feature/website-redesign`, HEAD `f3ca2b6`,
+empty initial index and the 13 expected Phase 3.3 files. Reviewed implementation,
+tests, the isolated Razor fixture and documentation; no unrelated files or changes
+to public visuals/lightboxes, entities/migrations, image assets or business records.
+Updated the phase note with owner acceptance and completed status; approved
+implementation and tests are unchanged by finalization. English-content usage
+instructions match the bulk editor and existing fallback behavior.
+
+Read-only GitHub API confirmed PR #1 is open, draft and unmerged before finalization.
+No new browser, real web/preview host, SQL Server connection, EF database command or
+data/upload/room/pricing/booking change is performed. Existing limitations remain:
+automated authenticated HTTP integration, real SQL concurrency, comprehensive
+accessibility/cross-browser QA and deployment/security/backup readiness are not
+established by these checks. No next development phase is started.
+
+Final solution and both standalone harness builds passed with zero warnings/errors
+using `--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase33FinalVerification/`.
+An initial concurrent harness build attempt with `--no-dependencies` was stopped
+without completion diagnostics after several minutes; the standard sequential
+single-worker rebuilds succeeded. The cause of the incomplete attempt is unknown;
+no dependency or implementation change was made to obtain the passing results.
+Fresh DLLs passed Availability **14/14** and GalleryUpload **33/33**; all four Node
+suites passed **31/31** (**78 automated checks total**). Local documentation links,
+exact file-scope/baseline/index checks and whitespace checks passed. Build output
+is ignored. Commit/push hashes and verified remote/final working-tree state are
+reported after Git operations.
+Staging is restricted to the approved 13 source, test and documentation files;
+temporary scripts, ignored build output and unrelated files are excluded. No PR
+mutation, merge, reset, rebase, branch switch or previous-commit rewrite is allowed.
+
+## 2026-11-17 — Phase 3.3 bulk gallery captions
+
+Verified solution directory, `feature/website-redesign`, HEAD `f3ca2b6` and a clean
+working tree before editing. Read project guidance, architecture/design/roadmap,
+the log and caption/ordering documentation. Added one shared editor to property
+and room Admin galleries, retaining their upload, position, cover and delete actions.
+Owners can edit multiple bilingual captions and save once, or apply one language
+to selected photos as a draft. Existing nonempty values require explicit replacement;
+that option resets after use or language change. Fields remain independently editable.
+Added live feedback and unsaved-navigation warnings; bulk saving also works without JS.
+
+The protected POST validates all IDs against the requested gallery and all caption
+lengths, then updates only changed caption fields in one transaction. Conditional
+original-value comparisons preserve untouched concurrent captions and roll back
+stale edited batches. Validation/conflict responses retain the draft. No schema,
+migrations, entity, dependency, real upload/file, public Gallery/lightbox or unrelated
+application changes. Existing individual-caption endpoint remains compatible.
+
+Added three SQLite bulk-caption regression groups and four Node interaction checks.
+The isolated Razor fixture now renders the Admin editor with sample bilingual content
+through `/Gallery?admin-editor=property` or `room`; it does not enable Admin POSTs.
+Usage and implementation details: [Phase 3.3](docs/GALLERY-CAPTIONS-PHASE33.md) and
+[English Content](docs/ENGLISH-CONTENT.md).
+
+Verification: solution and both harness builds passed with zero warnings/errors using
+`--no-restore -m:1 -v:minimal -p:BaseOutputPath=bin/Phase33Verification/`.
+GalleryUpload build passed with zero warnings/errors and its fresh DLL passed
+**33/33** checks. All four Node suites passed **31/31**. Initial Availability
+fixture build found a local variable-name collision, corrected before retry.
+Fresh Availability DLL passed **14/14**; total **78 automated checks passed**.
+
+The isolated preview required approved retries outside the sandbox after a
+data-protection file-access error. Its first Admin view request lacked Admin
+ambient route context for partial lookup; corrected the fixture, rebuilt cleanly
+and restarted. The failed browser tab's error page blocked further operations;
+a fresh temporary tab successfully loaded the corrected preview.
+
+Browser measurements passed both editor scopes with BG/EN query settings at
+320, 375, 768, 1024 and 1440px (20 cases): no page overflow, 18 caption fields
+associated with the bulk form, correct Admin POST action. Keyboard Enter applied
+English to five empty captions while retaining four existing translations;
+explicit replacement affected all nine English fields, reset its permission and
+preserved Bulgarian. An individual caption remained editable. A 500-character
+bilingual caption at 320px stayed contained; Tab advanced to the position field.
+Both empty-gallery views retained upload controls and their empty messages without
+overflow. Reset viewport override, closed the working temporary tab and stopped
+the preview. No preview forms were submitted or photos uploaded/deleted/moved.
+
+These are synthetic fixture/layout and direct-controller SQLite checks, not a
+logged-in end-to-end save through real middleware or real SQL Server concurrency.
+Full keyboard-only journeys, screen-reader feedback, actual zoom/reflow, reduced
+motion, missing authentic photos, other browsers and offline calendar browser QA
+remain manual checks. Admin labels remain English, matching the existing interface;
+the BG/EN query variants exercise bilingual sample text without claiming an Admin
+translation redesign. No-JS saving is supported by native form association, which
+was inspected in the browser; JavaScript-disabled submission was not run.
+Documentation links and final whitespace/diff checks passed.
+
+Changes are uncommitted for manual review. No real application startup, SQL Server
+connection, EF database command, commit, push, merge, reset, branch switch or PR #1
+modification was performed.
+
 ## 2026-11-17 — Finalize approved unified lightbox experience
 
 Owner approved the Gallery and Room Details lightboxes on desktop/mobile,

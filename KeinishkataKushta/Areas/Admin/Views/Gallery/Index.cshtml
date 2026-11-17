@@ -1,7 +1,8 @@
-﻿@model KeinishkataKushta.Web.Areas.Admin.Models.GalleryIndexViewModel
+@model KeinishkataKushta.Web.Areas.Admin.Models.GalleryIndexViewModel
 
 @{
 	ViewData["Title"] = "Gallery";
+    ViewData["CaptionRoomId"] = Model.RoomId;
 }
 
 <h1>Gallery for: @Model.RoomName</h1>
@@ -55,52 +56,9 @@
 }
 else
 {
-	<div class="row">
-		@for (var index = 0; index < Model.Images.Count; index++)
-		{
-			var img = Model.Images[index];
-			<div class="col-md-3 mb-4">
-				<div class="card">
-					<img class="card-img-top"
-						 src="~/uploads/rooms/@Model.RoomId/@img.FileName"
-						 alt="@img.Caption" loading="lazy" decoding="async" style="aspect-ratio:4/3;object-fit:cover;" />
-
-					<div class="card-body">
-						@await Html.PartialAsync("_ImageCaptions", new KeinishkataKushta.Web.Areas.Admin.Models.GalleryImageCaptionViewModel
-						{
-							Id = img.Id, RoomId = Model.RoomId, Caption = img.Caption, CaptionEn = img.CaptionEn
-						})
-						@await Html.PartialAsync("_ImagePosition", new KeinishkataKushta.Web.Areas.Admin.Models.GalleryImagePositionViewModel
-						{
-							Id = img.Id, RoomId = Model.RoomId, Position = index + 1, Total = Model.Images.Count
-						})
-
-						@if (img.IsCover) // Badge for cover image
-						{
-							<span class="badge bg-success">Cover</span>
-						}
-
-						@if (!img.IsCover)
-						{
-							<form asp-area="Admin" asp-controller="Gallery" asp-action="MakeCover" method="post" class="mt-2">
-								@Html.AntiForgeryToken()
-								<input type="hidden" name="id" value="@img.Id" />
-								<input type="hidden" name="roomId" value="@Model.RoomId" />
-								<button class="btn btn-sm btn-outline-success" type="submit">Make cover</button>
-							</form>
-						}
-
-
-						<form asp-area="Admin" asp-controller="Gallery" asp-action="Delete" method="post" class="mt-2">
-							@Html.AntiForgeryToken()
-							<input type="hidden" name="id" value="@img.Id" />
-							<input type="hidden" name="roomId" value="@Model.RoomId" />
-							<button class="btn btn-sm btn-danger" type="submit">Delete</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		}
-	</div>
+    @await Html.PartialAsync("_CaptionEditor", Model.Images)
 }
 
+@section Scripts {
+    <script src="~/js/admin-gallery-captions.js" asp-append-version="true"></script>
+}
